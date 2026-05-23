@@ -3727,14 +3727,7 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
             </div>
           );
 
-          /* ══════════════════════════════════════════════════════════════
-             CARD 1 — CODE MINIFIER
-             Runs string compaction regex formulas on click.
-             Strategies:
-               · Trim      — .replace(/\s+/g, ' ').trim()
-               · Minify    — also strips /* */ and // comments + semicolons
-               · Collapse  — removes ALL whitespace (single token stream)
-             ══════════════════════════════════════════════════════════════ */
+          
           const [minInput,    setMinInput]    = React.useState("");
           const [minOutput,   setMinOutput]   = React.useState("");
           const [minMode,     setMinMode]     = React.useState("trim");
