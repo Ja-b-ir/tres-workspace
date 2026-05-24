@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom/client';
 
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
@@ -552,7 +553,7 @@ function TimesheetTracker({ dark, milestones, surface, border, text, muted, acce
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="timesheet-2col">
         <div>
           <label style={{ fontSize: 10.5, fontWeight: 600, color: muted, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 5, display: "block" }}>Milestone Task</label>
           <select value={taskIdx} onChange={e => setTaskIdx(Number(e.target.value))} style={{ width: "100%", padding: "8px 10px", border: `1px solid ${border}`, borderRadius: 9, background: dark ? "#0f172a" : "#f8fafc", color: text, fontSize: 12, outline: "none" }}>
@@ -667,12 +668,12 @@ function InvoiceGenerator({ dark, surface, border, text, muted, accent, projectC
           <div style={{ fontSize: 11, color: muted }}>Build, calculate, and export professional invoices</div>
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+      <div className="invoice-3col">
         <div><label style={labelS}>Invoice #</label><input style={inputS} value={invNum} onChange={e => setInvNum(e.target.value)} /></div>
         <div><label style={labelS}>Bill To</label><input style={inputS} value={clientName} onChange={e => setClientName(e.target.value)} /></div>
         <div><label style={labelS}>Due Date</label><input type="date" style={inputS} value={dueDate} onChange={e => setDueDate(e.target.value)} /></div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="timesheet-2col">
         <div>
           <label style={labelS}>Currency</label>
           <div style={{ display: "flex", gap: 5 }}>
@@ -1233,14 +1234,14 @@ function ProjectHub({ projects, onOpenProject, onCreateProject, onDeleteProject,
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           </div>
           <div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: text, letterSpacing: "-0.03em", fontFamily: "'DM Serif Display', serif" }}>Project Selection Hub</div>
-            <div style={{ fontSize: 13, color: muted, marginTop: 2 }}>Select a workspace or start a fresh project</div>
+            <div style={{ fontSize: "clamp(22px,4vw,28px)", fontWeight: 800, color: text, letterSpacing: "-0.03em", fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif" }}>Project Selection Hub</div>
+            <div style={{ fontSize: 14, color: dark ? "#94a3b8" : "#475569", marginTop: 4, fontWeight: 500 }}>Select a workspace or start a fresh project</div>
           </div>
         </div>
       </div>
 
       {/* Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20, animation: "fadeIn 0.5s ease" }}>
+      <div className="hub-grid" style={{ animation: "fadeIn 0.5s ease" }}>
 
         {/* New Project Card */}
         {!showNew ? (
@@ -3727,7 +3728,14 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
             </div>
           );
 
-          
+          /* ══════════════════════════════════════════════════════════════
+             CARD 1 — CODE MINIFIER
+             Runs string compaction regex formulas on click.
+             Strategies:
+               · Trim      — .replace(/\s+/g, ' ').trim()
+               · Minify    — also strips /* */ and // comments + semicolons
+               · Collapse  — removes ALL whitespace (single token stream)
+             ══════════════════════════════════════════════════════════════ */
           const [minInput,    setMinInput]    = React.useState("");
           const [minOutput,   setMinOutput]   = React.useState("");
           const [minMode,     setMinMode]     = React.useState("trim");
@@ -5136,8 +5144,8 @@ function App() {
 
   // ── Auth persistence ──────────────────────────────────────
   const [isAuthenticated, setIsAuthenticated] = React.useState(() => localStorage.getItem('tres_logged_in') === 'true');
-  // viewMode: 'landing' | 'signin' | 'signup'
-  const [viewMode, setViewMode] = useState(() => localStorage.getItem('tres_logged_in') === 'true' ? 'dashboard' : 'landing');
+  // viewMode: 'signin' | 'signup' (landing removed)
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem('tres_logged_in') === 'true' ? 'dashboard' : 'signin');
 
   // Sync auth state to localStorage
   useEffect(() => {
@@ -5191,7 +5199,7 @@ function App() {
   // ── Log Out ───────────────────────────────────────────────
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setViewMode('landing');
+    setViewMode('signin');
     setLoginEmail(""); setLoginPassword(""); setLoginError("");
     setSignupName(""); setSignupEmail(""); setSignupPassword(""); setSignupConfirm(""); setSignupError("");
   };
@@ -5338,8 +5346,29 @@ function App() {
   const muted   = dark ? "#94a3b8" : "#64748b";
   const accent  = "#6366f1";
 
-  const inputStyle = { width: "100%", padding: "9px 12px", border: `1px solid ${border}`, borderRadius: 9, background: dark ? "#0f172a" : "#f8fafc", color: text, fontSize: 13, outline: "none", transition: "border-color 0.15s", boxSizing: "border-box", fontFamily: "inherit" };
-  const labelStyle = { fontSize: 11.5, fontWeight: 600, color: muted, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 5, display: "block" };
+  const inputStyle = {
+    width: "100%",
+    padding: "10px 13px",
+    border: `1px solid ${border}`,
+    borderRadius: 9,
+    background: dark ? "#0f172a" : "#ffffff",
+    color: dark ? "#f1f5f9" : "#0f172a",
+    fontSize: 14,
+    outline: "none",
+    transition: "border-color 0.15s",
+    boxSizing: "border-box",
+    fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif",
+    fontWeight: 400,
+  };
+  const labelStyle = {
+    fontSize: 12,
+    fontWeight: 700,
+    color: dark ? "#94a3b8" : "#374151",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    marginBottom: 6,
+    display: "block",
+  };
 
   // Shorthand for project fields
   const proj = activeProject || {};
@@ -5489,553 +5518,196 @@ function App() {
     );
   }
 
-  // ─── Public Auth Shell (landing | signin | signup) ───────────
+  // ─── Public Auth Shell (signin | signup — landing removed) ───────────
   if (!isAuthenticated) {
     const authBg = "linear-gradient(135deg, #0f172a 0%, #1a1040 50%, #0f1f2e 100%)";
+
+    /* ── Shared auth styles ── */
     const cardStyle = {
-      width: "min(440px, 93vw)",
-      background: "rgba(30,41,59,0.96)",
+      width: "min(480px, 95vw)",
+      background: "rgba(22,32,50,0.97)",
       borderRadius: 24,
-      border: "1px solid rgba(99,102,241,0.25)",
-      boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.1)",
-      padding: "44px 40px 40px",
-      animation: "fadeIn 0.45s ease",
+      border: "1px solid rgba(99,102,241,0.22)",
+      boxShadow: "0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(99,102,241,0.08)",
+      padding: "clamp(28px, 6vw, 48px) clamp(20px, 6vw, 44px) clamp(24px, 5vw, 40px)",
+      animation: "authFadeIn 0.45s ease",
       display: "flex", flexDirection: "column", alignItems: "center",
     };
-    const fieldLabel = { fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6, display: "block" };
-    const fieldInput = { width: "100%", padding: "11px 14px", border: "1px solid rgba(99,102,241,0.2)", borderRadius: 10, background: "rgba(15,23,42,0.8)", color: "#f1f5f9", fontSize: 14, transition: "all 0.15s", outline: "none", fontFamily: "inherit" };
+    const fieldLabel = {
+      fontSize: 12, fontWeight: 700,
+      color: "#94a3b8",
+      textTransform: "uppercase", letterSpacing: "0.07em",
+      marginBottom: 7, display: "block",
+    };
+    const fieldInput = {
+      width: "100%", padding: "13px 16px",
+      border: "1px solid rgba(99,102,241,0.2)",
+      borderRadius: 12,
+      background: "rgba(10,18,36,0.85)",
+      color: "#f1f5f9",
+      fontSize: 15,
+      lineHeight: 1.5,
+      transition: "all 0.15s", outline: "none",
+      fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif",
+    };
+
+    /* ── Logo mark ── */
     const logoBlock = (
-      <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: 28 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 0, userSelect: "none" }}>
-          <span style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: "#ffffff", lineHeight: 1 }}>T</span>
-          <span style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: "#ffffff", lineHeight: 1 }}>r</span>
-          <span style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", background: "linear-gradient(to bottom, #3b82f6 0%, #a855f7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", display: "inline-block", lineHeight: 1 }}>E</span>
-          <span style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: "#ffffff", lineHeight: 1 }}>S</span>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "rgba(148,163,184,0.55)", marginLeft: 8, alignSelf: "center", letterSpacing: "0.04em" }}>Workspace</span>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: 32 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+          {/* Icon badge */}
+          <div style={{
+            width: 56, height: 56, borderRadius: 16,
+            background: "linear-gradient(135deg, #6366f1, #4f46e5)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 8px 24px rgba(99,102,241,0.45)",
+          }}>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          {/* Wordmark */}
+          <div style={{ display: "flex", alignItems: "baseline", gap: 0, userSelect: "none" }}>
+            <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif", color: "#ffffff", lineHeight: 1 }}>T</span>
+            <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif", color: "#ffffff", lineHeight: 1 }}>r</span>
+            <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif", background: "linear-gradient(to bottom, #818cf8, #a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", display: "inline-block", lineHeight: 1 }}>E</span>
+            <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif", color: "#ffffff", lineHeight: 1 }}>S</span>
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(148,163,184,0.55)", letterSpacing: "0.18em", textTransform: "uppercase" }}>Workspace</div>
         </div>
       </div>
     );
+
+    /* ── Primary action button ── */
     const primaryBtn = (label, onClick) => (
-      <button onClick={onClick} style={{ marginTop: 4, width: "100%", padding: "13px 0", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #6366f1, #4f46e5)", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 16px rgba(99,102,241,0.4)" }}
-        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(99,102,241,0.55)"; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px rgba(99,102,241,0.4)"; }}>
+      <button
+        onClick={onClick}
+        style={{
+          marginTop: 6, width: "100%", padding: "14px 0",
+          borderRadius: 12, border: "none",
+          background: "linear-gradient(135deg, #6366f1, #4f46e5)",
+          color: "#fff", fontSize: 15, fontWeight: 700,
+          cursor: "pointer", transition: "all 0.2s",
+          boxShadow: "0 4px 16px rgba(99,102,241,0.4)",
+          fontFamily: "'Plus Jakarta Sans','DM Sans',sans-serif",
+          letterSpacing: "-0.01em",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(99,102,241,0.55)"; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px rgba(99,102,241,0.4)"; }}
+      >
         {label}
       </button>
     );
 
-    // ── LANDING PAGE ─────────────────────────────────────────
-    if (viewMode === 'landing') {
-      // Particle data: [size, top%, left%, animDuration, animDelay, opacity]
-      const particles = [
-        [120,5,8,44,0,"rgba(99,102,241,0.07)"],[80,12,72,51,3,"rgba(6,182,212,0.06)"],[60,3,45,38,7,"rgba(167,139,250,0.08)"],
-        [200,18,90,60,1,"rgba(99,102,241,0.04)"],[45,25,18,42,5,"rgba(6,182,212,0.09)"],[150,35,55,55,2,"rgba(99,102,241,0.05)"],
-        [90,42,3,48,8,"rgba(167,139,250,0.07)"],[70,50,80,40,4,"rgba(6,182,212,0.06)"],[110,58,33,52,6,"rgba(99,102,241,0.06)"],
-        [55,65,67,45,1,"rgba(167,139,250,0.09)"],[180,70,12,57,9,"rgba(99,102,241,0.04)"],[65,75,50,43,3,"rgba(6,182,212,0.07)"],
-        [95,80,88,50,7,"rgba(99,102,241,0.05)"],[40,88,28,39,2,"rgba(167,139,250,0.08)"],[130,92,60,53,5,"rgba(6,182,212,0.05)"],
-        [75,8,35,46,10,"rgba(99,102,241,0.06)"],[100,20,62,41,6,"rgba(6,182,212,0.07)"],[50,30,5,58,4,"rgba(167,139,250,0.06)"],
-        [160,40,78,47,8,"rgba(99,102,241,0.05)"],[85,48,42,44,1,"rgba(6,182,212,0.08)"],[45,56,95,36,9,"rgba(167,139,250,0.07)"],
-        [115,62,22,54,3,"rgba(99,102,241,0.06)"],[70,68,57,42,7,"rgba(6,182,212,0.05)"],[190,77,38,61,2,"rgba(99,102,241,0.03)"],
-        [60,83,75,40,5,"rgba(167,139,250,0.08)"],[80,90,15,49,10,"rgba(6,182,212,0.06)"],[140,15,85,56,6,"rgba(99,102,241,0.05)"],
-        [55,33,50,38,4,"rgba(167,139,250,0.07)"],[100,55,10,47,8,"rgba(6,182,212,0.06)"],[75,72,92,43,1,"rgba(99,102,241,0.07)"],
-        [120,85,44,52,9,"rgba(6,182,212,0.05)"],[90,95,70,46,3,"rgba(167,139,250,0.06)"],[65,2,25,41,7,"rgba(99,102,241,0.08)"],
-        [110,10,55,59,5,"rgba(6,182,212,0.07)"],[50,22,82,37,2,"rgba(167,139,250,0.09)"],
-      ];
-
-      return (
-        <div style={{ minHeight: "100vh", background: appDark ? "linear-gradient(135deg,#0f172a 0%,#1a1040 50%,#0f1f2e 100%)" : "linear-gradient(135deg,#f0f4ff 0%,#faf5ff 40%,#f0fdf9 100%)", fontFamily: "'DM Sans','Segoe UI',sans-serif", overflowX: "hidden", position: "relative", transition: "background 0.4s ease" }}>
-          <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-            @keyframes flowBackground {
-              0%   { transform: translate(0px, 0px) scale(1); }
-              15%  { transform: translate(18px, -25px) scale(1.04); }
-              30%  { transform: translate(-12px, 20px) scale(0.97); }
-              45%  { transform: translate(28px, 10px) scale(1.06); }
-              60%  { transform: translate(-20px, -15px) scale(1.02); }
-              75%  { transform: translate(10px, 30px) scale(0.96); }
-              90%  { transform: translate(-8px, -22px) scale(1.03); }
-              100% { transform: translate(0px, 0px) scale(1); }
-            }
-
-            @keyframes fadeInUp {
-              from { opacity: 0; transform: translateY(28px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-
-            @keyframes pulseCyan {
-              0%, 100% { box-shadow: 0 0 0 0 rgba(6,182,212,0); }
-              50%       { box-shadow: 0 0 22px 4px rgba(6,182,212,0.35); }
-            }
-
-            @keyframes shimmer {
-              0%   { background-position: -200% center; }
-              100% { background-position: 200% center; }
-            }
-
-            @keyframes subtleBob {
-              0%,100% { transform: translateY(0px); }
-              50%      { transform: translateY(-6px); }
-            }
-
-            @keyframes navSlideDown {
-              from { opacity: 0; transform: translateY(-16px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-
-            .lp-particle {
-              position: absolute;
-              border-radius: 50%;
-              pointer-events: none;
-              animation: flowBackground linear infinite;
-            }
-
-            .lp-nav {
-              animation: navSlideDown 0.6s ease both;
-            }
-
-            .lp-badge {
-              opacity: 0;
-              animation: fadeInUp 0.8s ease-out 0.1s forwards;
-            }
-            .lp-h1 {
-              opacity: 0;
-              animation: fadeInUp 0.9s ease-out 0.25s forwards;
-            }
-            .lp-sub {
-              opacity: 0;
-              animation: fadeInUp 0.9s ease-out 0.42s forwards;
-            }
-            .lp-cta {
-              opacity: 0;
-              animation: fadeInUp 0.9s ease-out 0.58s forwards;
-            }
-            .lp-metrics {
-              opacity: 0;
-              animation: fadeInUp 0.9s ease-out 0.72s forwards;
-            }
-            .lp-feat-title {
-              opacity: 0;
-              animation: fadeInUp 0.8s ease-out 0.3s forwards;
-            }
-            .lp-card-0 { opacity:0; animation: fadeInUp 0.7s ease-out 0.10s forwards; }
-            .lp-card-1 { opacity:0; animation: fadeInUp 0.7s ease-out 0.20s forwards; }
-            .lp-card-2 { opacity:0; animation: fadeInUp 0.7s ease-out 0.30s forwards; }
-            .lp-card-3 { opacity:0; animation: fadeInUp 0.7s ease-out 0.40s forwards; }
-            .lp-card-4 { opacity:0; animation: fadeInUp 0.7s ease-out 0.50s forwards; }
-            .lp-card-5 { opacity:0; animation: fadeInUp 0.7s ease-out 0.60s forwards; }
-            .lp-why-0  { opacity:0; animation: fadeInUp 0.7s ease-out 0.15s forwards; }
-            .lp-why-1  { opacity:0; animation: fadeInUp 0.7s ease-out 0.28s forwards; }
-            .lp-why-2  { opacity:0; animation: fadeInUp 0.7s ease-out 0.41s forwards; }
-            .lp-why-3  { opacity:0; animation: fadeInUp 0.7s ease-out 0.54s forwards; }
-            .lp-stat-0 { opacity:0; animation: fadeInUp 0.7s ease-out 0.10s forwards; }
-            .lp-stat-1 { opacity:0; animation: fadeInUp 0.7s ease-out 0.22s forwards; }
-            .lp-stat-2 { opacity:0; animation: fadeInUp 0.7s ease-out 0.34s forwards; }
-            .lp-stat-3 { opacity:0; animation: fadeInUp 0.7s ease-out 0.46s forwards; }
-            .lp-footer-cta { opacity:0; animation: fadeInUp 0.8s ease-out 0.2s forwards; }
-
-            .lp-btn-primary {
-              padding: 15px 36px; border-radius: 14px; border: none;
-              background: linear-gradient(135deg,#6366f1,#4f46e5);
-              color: #fff; font-size: 15px; font-weight: 700;
-              cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
-              box-shadow: 0 6px 24px rgba(99,102,241,0.45);
-              font-family: inherit;
-            }
-            .lp-btn-primary:hover {
-              transform: translateY(-3px) scale(1.04);
-              box-shadow: 0 10px 32px rgba(99,102,241,0.55);
-              animation: pulseCyan 1.6s ease infinite;
-            }
-            .lp-btn-ghost {
-              padding: 15px 36px; border-radius: 14px;
-              border: 1px solid rgba(99,102,241,0.3);
-              background: rgba(99,102,241,0.08); color: #a5b4fc;
-              font-size: 15px; font-weight: 600; cursor: pointer;
-              transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
-              font-family: inherit;
-            }
-            .lp-btn-ghost:hover {
-              transform: translateY(-3px) scale(1.03);
-              border-color: rgba(99,102,241,0.6);
-              box-shadow: 0 8px 24px rgba(99,102,241,0.2);
-            }
-            .lp-btn-nav-outline {
-              padding: 9px 22px; border-radius: 10px;
-              border: 1px solid rgba(99,102,241,0.35);
-              background: transparent; color: #a5b4fc;
-              font-size: 13px; font-weight: 600; cursor: pointer;
-              transition: all 0.18s; font-family: inherit;
-            }
-            .lp-btn-nav-outline:hover {
-              background: rgba(99,102,241,0.1);
-              border-color: rgba(99,102,241,0.6);
-              transform: translateY(-1px);
-            }
-            .lp-btn-nav-solid {
-              padding: 9px 22px; border-radius: 10px; border: none;
-              background: linear-gradient(135deg,#6366f1,#4f46e5);
-              color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
-              transition: all 0.18s; box-shadow: 0 4px 14px rgba(99,102,241,0.4);
-              font-family: inherit;
-            }
-            .lp-btn-nav-solid:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 8px 22px rgba(99,102,241,0.55);
-            }
-            .lp-feat-card {
-              background: ${appDark ? "rgba(30,41,59,0.72)" : "rgba(255,255,255,0.85)"};
-              border: 1px solid ${appDark ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.15)"};
-              border-radius: 18px; padding: 28px 26px;
-              backdrop-filter: blur(12px);
-              transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
-              box-shadow: ${appDark ? "none" : "0 4px 20px rgba(0,0,0,0.06)"};
-            }
-            .lp-feat-card:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 16px 40px ${appDark ? "rgba(0,0,0,0.35)" : "rgba(99,102,241,0.15)"};
-              border-color: rgba(99,102,241,0.28);
-            }
-            .lp-why-card {
-              background: ${appDark ? "rgba(30,41,59,0.6)" : "rgba(255,255,255,0.8)"};
-              border: 1px solid ${appDark ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.12)"};
-              border-radius: 16px; padding: 24px 22px;
-              backdrop-filter: blur(10px);
-              transition: transform 0.22s ease, box-shadow 0.22s ease;
-              box-shadow: ${appDark ? "none" : "0 2px 12px rgba(0,0,0,0.05)"};
-            }
-            .lp-why-card:hover {
-              transform: translateY(-4px);
-              box-shadow: 0 12px 32px ${appDark ? "rgba(0,0,0,0.3)" : "rgba(99,102,241,0.12)"};
-            }
-            .lp-stat-card {
-              background: ${appDark ? "rgba(30,41,59,0.65)" : "rgba(255,255,255,0.85)"};
-              border: 1px solid ${appDark ? "rgba(99,102,241,0.15)" : "rgba(99,102,241,0.12)"};
-              border-radius: 16px; padding: 28px 24px; text-align: center;
-              backdrop-filter: blur(10px);
-              transition: transform 0.22s ease;
-              box-shadow: ${appDark ? "none" : "0 2px 12px rgba(0,0,0,0.05)"};
-            }
-            .lp-stat-card:hover { transform: translateY(-3px); }
-            .lp-shimmer-text {
-              background: linear-gradient(90deg, #6366f1, #a78bfa, #38bdf8, #a78bfa, #6366f1);
-              background-size: 200% auto;
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              animation: shimmer 4s linear infinite;
-            }
-            .lp-divider {
-              width: 60px; height: 3px; border-radius: 99px;
-              background: linear-gradient(90deg,#6366f1,#38bdf8);
-              margin: 0 auto 20px;
-            }
-          `}</style>
-
-          {/* ── PARTICLE BACKGROUND ──────────────────────────── */}
-          <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-            {particles.map(([sz, top, left, dur, delay, bg], i) => (
-              <div
-                key={i}
-                className="lp-particle"
-                style={{
-                  width: sz, height: sz,
-                  top: `${top}%`, left: `${left}%`,
-                  background: appDark ? bg : bg.replace(/0\.\d+\)/, "0.04)"),
-                  animationDuration: `${dur}s`,
-                  animationDelay: `-${delay}s`,
-                  transition: "background 0.4s ease",
-                }}
-              />
-            ))}
-          </div>
-
-          {/* ── NAV ─────────────────────────────────────────── */}
-          <nav className="lp-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid rgba(99,102,241,0.12)", position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(20px)", background: appDark ? "rgba(15,23,42,0.88)" : "rgba(248,250,252,0.94)", flexWrap: "wrap", gap: 10 }}>
-            <style>{`@media (min-width: 640px) { .lp-nav { padding: 18px 48px !important; flex-wrap: nowrap !important; gap: 0 !important; } }`}</style>
-            {/* ── TrES Workspace text logo — top left ── */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 0, userSelect: "none" }}>
-              <span style={{
-                fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em",
-                fontFamily: "'DM Sans','Segoe UI',sans-serif",
-                color: appDark ? "#ffffff" : "#0B132B",
-                lineHeight: 1,
-              }}>T</span>
-              <span style={{
-                fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em",
-                fontFamily: "'DM Sans','Segoe UI',sans-serif",
-                color: appDark ? "#ffffff" : "#0B132B",
-                lineHeight: 1,
-              }}>r</span>
-              <span style={{
-                fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em",
-                fontFamily: "'DM Sans','Segoe UI',sans-serif",
-                background: "linear-gradient(to bottom, #3b82f6 0%, #a855f7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                display: "inline-block",
-                lineHeight: 1,
-              }}>E</span>
-              <span style={{
-                fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em",
-                fontFamily: "'DM Sans','Segoe UI',sans-serif",
-                color: appDark ? "#ffffff" : "#0B132B",
-                lineHeight: 1,
-              }}>S</span>
-              <span style={{
-                fontSize: 13, fontWeight: 600, letterSpacing: "0.04em",
-                fontFamily: "'DM Sans','Segoe UI',sans-serif",
-                color: appDark ? "rgba(148,163,184,0.6)" : "rgba(11,19,43,0.5)",
-                marginLeft: 7, alignSelf: "center",
-              }}>Workspace</span>
-            </div>
-            {/* Auth buttons + theme toggle — top right */}
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              {/* Theme Toggle */}
-              <button
-                onClick={() => setAppTheme(t => t === 'dark' ? 'light' : 'dark')}
-                title={appDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  border: "1px solid rgba(99,102,241,0.3)",
-                  background: "rgba(99,102,241,0.08)",
-                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(99,102,241,0.18)"; e.currentTarget.style.transform = "scale(1.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "rgba(99,102,241,0.08)"; e.currentTarget.style.transform = ""; }}>
-                {appDark
-                  ? /* Sun */ <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                  : /* Moon */ <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                }
-              </button>
-              <button className="lp-btn-nav-outline" onClick={() => setViewMode('signin')}>Sign In</button>
-              <button className="lp-btn-nav-solid" onClick={() => setViewMode('signup')}>Get Started</button>
-            </div>
-          </nav>
-
-          {/* ── HERO ─────────────────────────────────────────── */}
-          <section style={{ textAlign: "center", padding: "72px 20px 60px", position: "relative", zIndex: 1 }}>
-            <div className="lp-badge" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 18px", borderRadius: 99, background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.28)", marginBottom: 36 }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#6366f1", animation: "subtleBob 2.4s ease-in-out infinite" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#a5b4fc", letterSpacing: "0.08em", textTransform: "uppercase" }}>The All-in-One Freelance OS</span>
-            </div>
-            <h1 className="lp-h1" style={{ fontSize: "clamp(38px,6.5vw,76px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.03em", lineHeight: 1.07, maxWidth: 900, margin: "0 auto 28px" }}>
-              Manage clients,<br />
-              <span className="lp-shimmer-text">projects &amp; revenue</span>
-              <br />from one workspace.
-            </h1>
-            <p className="lp-sub" style={{ fontSize: "clamp(14px, 3.5vw, 18px)", color: appDark ? "#94a3b8" : "#475569", maxWidth: 580, margin: "0 auto 48px", lineHeight: 1.75 }}>
-              TrES is the premium workspace built for freelancers and agencies — track milestones, generate invoices, and deliver polished client reports without switching tools.
-            </p>
-            <div className="lp-cta" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-              <button className="lp-btn-primary" onClick={() => setViewMode('signup')}>Start Free — No Card Needed</button>
-              <button className="lp-btn-ghost" onClick={() => setViewMode('signin')}>Sign In to Dashboard →</button>
-            </div>
-
-            {/* Metrics strip */}
-            <div className="lp-metrics" style={{ display: "flex", gap: 0, justifyContent: "center", marginTop: 60, flexWrap: "wrap", rowGap: 24 }}>
-              {[
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>, val: "99.9%", lbl: "Platform Uptime", c: "#06b6d4" },
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, val: "E2E", lbl: "Data Encryption", c: "#6366f1" },
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, val: "0ms", lbl: "Sync Latency", c: "#10b981" },
-              ].map((m, i) => (
-                <div key={i} style={{ padding: "0 48px", borderRight: i < 2 ? "1px solid rgba(99,102,241,0.15)" : "none", textAlign: "center" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 6 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: m.c + "18", border: `1px solid ${m.c}28`, display: "flex", alignItems: "center", justifyContent: "center" }}>{m.icon}</div>
-                    <div style={{ fontSize: "clamp(24px,3vw,36px)", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>{m.val}</div>
-                  </div>
-                  <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, letterSpacing: "0.04em" }}>{m.lbl}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ── FEATURES GRID ────────────────────────────────── */}
-          <section style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px 100px", position: "relative", zIndex: 1 }}>
-            <div className="lp-feat-title" style={{ textAlign: "center", marginBottom: 52 }}>
-              <div className="lp-divider" />
-              <div style={{ fontSize: "clamp(24px,3.5vw,38px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.02em" }}>Everything you need to run your business</div>
-              <div style={{ fontSize: 15, color: "#64748b", marginTop: 12, maxWidth: 520, margin: "12px auto 0" }}>Six powerful modules, one unified workspace. No context-switching required.</div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(290px,1fr))", gap: 20 }}>
-              {[
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>, color: "#6366f1", title: "Client Workspace", desc: "Track milestones, health status, scope budgets, and deadline pressure in real time — one pane per client." },
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, color: "#10b981", title: "Smart Invoice Generator", desc: "Build professional invoices with multi-currency support, VAT/GST presets, and one-click PDF export." },
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, color: "#f59e0b", title: "Billable Time Tracker", desc: "Per-milestone stopwatch timers, live billable totals, and a session logger that exports clean CSV timesheets." },
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>, color: "#06b6d4", title: "Utilities Studio", desc: "10 enterprise-grade file tools — PDF conversion, compression, OCR, encryption, and batch renaming." },
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, color: "#a78bfa", title: "Executive Resume Studio", desc: "ATS-optimised CV builder, agency pitch deck generator, and live resume preview — all in one place." },
-                { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>, color: "#f43f5e", title: "Completion Certificates", desc: "Auto-generate signed project completion certificates and timesheet PDFs the moment payment is cleared." },
-              ].map((f, i) => (
-                <div key={i} className={`lp-feat-card lp-card-${i}`}>
-                  <div style={{ width: 50, height: 50, borderRadius: 14, background: f.color + "1a", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18, border: `1px solid ${f.color}28` }}>{f.icon}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 10 }}>{f.title}</div>
-                  <div style={{ fontSize: 13, color: appDark ? "#94a3b8" : "#475569", lineHeight: 1.7 }}>{f.desc}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ── WHY CHOOSE TRES ──────────────────────────────── */}
-          <section style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px 100px", position: "relative", zIndex: 1 }}>
-            <div className="lp-feat-title" style={{ textAlign: "center", marginBottom: 52 }}>
-              <div className="lp-divider" />
-              <div style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.02em" }}>Why choose TrES?</div>
-              <div style={{ fontSize: 15, color: "#64748b", marginTop: 12 }}>Designed by freelancers, for freelancers — with zero fluff.</div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18 }}>
-              {[
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>, color: "#6366f1", title: "Blazing Fast", body: "Every interaction is instant — no spinners, no lag. Your workspace loads in under a second, every time." },
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, color: "#10b981", title: "Privacy First", body: "Your data lives in your browser. No cloud sync, no third-party tracking — total data sovereignty." },
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>, color: "#f59e0b", title: "Works Offline", body: "All core features — invoices, timers, notes — work without an internet connection. Always available." },
-                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, color: "#a78bfa", title: "Enterprise-Grade PDF", body: "From timesheets to invoices to certificates — every export is pixel-perfect and print-ready." },
-              ].map((w, i) => (
-                <div key={i} className={`lp-why-card lp-why-${i}`}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: w.color + "18", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, border: `1px solid ${w.color}22` }}>{w.icon}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 8 }}>{w.title}</div>
-                  <div style={{ fontSize: 13, color: appDark ? "#94a3b8" : "#475569", lineHeight: 1.65 }}>{w.body}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ── METRICS ──────────────────────────────────────── */}
-          <section style={{ maxWidth: 1140, margin: "0 auto", padding: "0 24px 100px", position: "relative", zIndex: 1 }}>
-            <div className="lp-feat-title" style={{ textAlign: "center", marginBottom: 48 }}>
-              <div className="lp-divider" />
-              <div style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.02em" }}>Trusted by creators worldwide</div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
-              {[
-                { val: "10,000+", lbl: "Active Freelancers", icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, c: "#6366f1" },
-                { val: "$4.2M+", lbl: "Revenue Managed",    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, c: "#10b981" },
-                { val: "250K+",  lbl: "Hours Tracked",       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, c: "#f59e0b" },
-                { val: "98%",    lbl: "Satisfaction Rate",   icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>, c: "#a78bfa" },
-              ].map((s, i) => (
-                <div key={i} className={`lp-stat-card lp-stat-${i}`}>
-                  <div style={{ width: 40, height: 40, borderRadius: 11, background: s.c + "18", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `1px solid ${s.c}22` }}>{s.icon}</div>
-                  <div style={{ fontSize: "clamp(26px,4vw,38px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.03em" }}>{s.val}</div>
-                  <div style={{ fontSize: 12, color: "#64748b", marginTop: 6, fontWeight: 500 }}>{s.lbl}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ── FOOTER CTA ───────────────────────────────────── */}
-          <section style={{ textAlign: "center", padding: "80px 24px 60px", borderTop: "1px solid rgba(99,102,241,0.1)", background: appDark ? "rgba(15,23,42,0.7)" : "rgba(240,244,255,0.9)", position: "relative", zIndex: 1 }}>
-            <div className="lp-footer-cta">
-              <div style={{ fontSize: "clamp(22px,3.5vw,38px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.02em", marginBottom: 14 }}>Ready to run your freelance business like a pro?</div>
-              <div style={{ fontSize: 15, color: "#94a3b8", marginBottom: 36, maxWidth: 480, margin: "0 auto 36px" }}>Join thousands of freelancers already using TrES Workspace.</div>
-              <button className="lp-btn-primary" onClick={() => setViewMode('signup')} style={{ fontSize: 15, padding: "14px 44px" }}>Create Free Account</button>
-              <div style={{ marginTop: 20, fontSize: 12, color: "#475569" }}>Already have an account?{" "}<button onClick={() => setViewMode('signin')} style={{ background: "none", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: 12, fontWeight: 600, textDecoration: "underline" }}>Sign In</button></div>
-            </div>
-          </section>
-
-          {/* ── FOOTER ───────────────────────────────────────── */}
-          <footer style={{ borderTop: "1px solid rgba(99,102,241,0.08)", background: appDark ? "rgba(10,14,26,0.95)" : "rgba(241,245,249,0.98)", padding: "56px 48px 32px", position: "relative", zIndex: 1 }}>
-            <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
-                {/* Brand col */}
-                <div>
-                  <img src="" alt="Your Logo Here" style={{ height: 40, width: "auto", maxWidth: 160, objectFit: "contain", background: "rgba(99,102,241,0.08)", borderRadius: 10, border: "1px dashed rgba(99,102,241,0.3)", padding: "6px 16px", marginBottom: 16 }} onError={e => { e.target.style.display = 'none'; }} />
-                  <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.7, maxWidth: 280 }}>The all-in-one freelance operating system. Manage projects, track time, and get paid — all from one beautiful workspace.</p>
-                  <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-                    {[
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>,
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>,
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>,
-                    ].map((icon, i) => (
-                      <div key={i} style={{ width: 34, height: 34, borderRadius: 9, border: "1px solid rgba(99,102,241,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", cursor: "pointer", transition: "all 0.15s" }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)"; e.currentTarget.style.color = "#a5b4fc"; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)"; e.currentTarget.style.color = "#475569"; }}>
-                        {icon}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* Product col */}
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Product</div>
-                  {["Client Workspace","Invoice Generator","Time Tracker","Utilities Studio","Resume Builder","Completion Certs"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
-                  ))}
-                </div>
-                {/* Company col */}
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Company</div>
-                  {["About Us","Careers","Blog","Press Kit","Partners","Contact"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
-                  ))}
-                </div>
-                {/* Legal col */}
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Legal</div>
-                  {["Privacy Policy","Terms of Service","Cookie Policy","GDPR","Security","Accessibility"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
-                  ))}
-                </div>
-              </div>
-              {/* Bottom bar */}
-              <div style={{ borderTop: "1px solid rgba(99,102,241,0.08)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-                <div style={{ fontSize: 12, color: "#334155" }}>© 2026 TrES Workspace. Built and owned by <span style={{ color: "#6366f1", fontWeight: 600 }}>CodeScriptors IT Solutions</span>. All rights reserved.</div>
-                <div style={{ display: "flex", gap: 20 }}>
-                  {["Privacy","Terms","Cookies"].map(l => (
-                    <span key={l} style={{ fontSize: 12, color: "#334155", cursor: "pointer", transition: "color 0.15s" }}
-                      onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#334155"}>{l}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </footer>
-        </div>
-      );
-    }
+    /* ── Shared global style tag for auth pages ── */
+    const AuthStyle = () => (
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes authFadeIn { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes authBgFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(12px,-18px) scale(1.04); } }
+        .auth-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.22) !important; outline: none; }
+        .auth-orb { position: absolute; border-radius: 50%; pointer-events: none; animation: authBgFloat linear infinite; }
+      `}</style>
+    );
 
     // ── SIGN-IN FORM ─────────────────────────────────────────
     if (viewMode === 'signin') {
       return (
-        <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
-          <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-            * { box-sizing: border-box; margin: 0; padding: 0; }
-            @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-            .auth-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; outline: none; }
-          `}</style>
+        <div style={{
+          minHeight: "100vh", background: authBg,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif",
+          position: "relative", overflow: "hidden", padding: "24px 16px",
+        }}>
+          <AuthStyle />
+          {/* Ambient orbs */}
+          <div className="auth-orb" style={{ width: 380, height: 380, top: "8%", left: "-8%", background: "radial-gradient(circle, rgba(99,102,241,0.1), transparent 70%)", filter: "blur(40px)", animationDuration: "14s" }} />
+          <div className="auth-orb" style={{ width: 300, height: 300, bottom: "10%", right: "-5%", background: "radial-gradient(circle, rgba(168,85,247,0.1), transparent 70%)", filter: "blur(40px)", animationDuration: "18s", animationDelay: "-6s" }} />
+
           <div style={cardStyle}>
             {logoBlock}
-            <div style={{ textAlign: "center", marginBottom: 32, width: "100%" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Welcome Back</div>
-              <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 8 }}>Sign in to your TrES Workspace</div>
+
+            <div style={{ textAlign: "center", marginBottom: 28, width: "100%" }}>
+              <div style={{ fontSize: "clamp(20px,5vw,26px)", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", lineHeight: 1.2 }}>Welcome back</div>
+              <div style={{ fontSize: 14, color: "#64748b", marginTop: 8, lineHeight: 1.5 }}>Sign in to your TrES Workspace</div>
             </div>
-            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
+
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
-                <label style={fieldLabel}>Email</label>
-                <input className="auth-input" type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="you@example.com" style={fieldInput} />
+                <label style={fieldLabel}>Email address</label>
+                <input
+                  className="auth-input"
+                  type="email"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLogin()}
+                  placeholder="you@example.com"
+                  style={fieldInput}
+                />
               </div>
               <div>
                 <label style={fieldLabel}>Password</label>
-                <input className="auth-input" type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="••••••••" style={fieldInput} />
+                <input
+                  className="auth-input"
+                  type="password"
+                  value={loginPassword}
+                  onChange={e => setLoginPassword(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLogin()}
+                  placeholder="••••••••"
+                  style={fieldInput}
+                />
               </div>
               {loginError && (
-                <div style={{ fontSize: 12, color: "#f87171", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "8px 12px" }}>{loginError}</div>
+                <div style={{
+                  fontSize: 13, fontWeight: 500,
+                  color: "#fca5a5",
+                  background: "rgba(239,68,68,0.12)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  borderRadius: 10, padding: "10px 14px",
+                  lineHeight: 1.5,
+                }}>{loginError}</div>
               )}
               {primaryBtn("Sign In →", handleLogin)}
             </div>
-            <div style={{ marginTop: 24, fontSize: 12, color: "#475569", textAlign: "center" }}>
-              Don't have an account?{" "}
-              <button onClick={() => { setLoginError(""); setViewMode('signup'); }} style={{ background: "none", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: 12, fontWeight: 600, textDecoration: "underline" }}>Create one free</button>
+
+            <div style={{ marginTop: 24, width: "100%", display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+              <div style={{ fontSize: 13, color: "#475569", textAlign: "center" }}>
+                Don't have an account?{" "}
+                <button
+                  onClick={() => { setLoginError(""); setViewMode('signup'); }}
+                  style={{ background: "none", border: "none", color: "#818cf8", cursor: "pointer", fontSize: 13, fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(129,140,248,0.4)" }}
+                >
+                  Create one free
+                </button>
+              </div>
+              {/* Feature highlights — replaces the "back to home" link */}
+              <div style={{
+                marginTop: 12, width: "100%",
+                borderTop: "1px solid rgba(99,102,241,0.1)",
+                paddingTop: 18,
+                display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center",
+              }}>
+                {[
+                  { icon: "⏱", text: "Time tracking" },
+                  { icon: "📄", text: "Invoice builder" },
+                  { icon: "🔒", text: "Local encryption" },
+                  { icon: "📊", text: "ATS resume" },
+                ].map(f => (
+                  <div key={f.text} style={{
+                    display: "flex", alignItems: "center", gap: 5,
+                    fontSize: 11.5, fontWeight: 600, color: "#475569",
+                    padding: "4px 10px", borderRadius: 20,
+                    background: "rgba(99,102,241,0.06)",
+                    border: "1px solid rgba(99,102,241,0.1)",
+                  }}>
+                    <span style={{ fontSize: 13 }}>{f.icon}</span> {f.text}
+                  </div>
+                ))}
+              </div>
             </div>
-            <button onClick={() => setViewMode('landing')} style={{ marginTop: 14, background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", gap: 5 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to home
-            </button>
           </div>
         </div>
       );
@@ -6043,59 +5715,91 @@ function App() {
 
     // ── SIGN-UP FORM ─────────────────────────────────────────
     return (
-      <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif", padding: "40px 16px" }}>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-          * { box-sizing: border-box; margin: 0; padding: 0; }
-          @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-          .auth-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; outline: none; }
-        `}</style>
+      <div style={{
+        minHeight: "100vh", background: authBg,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif",
+        position: "relative", overflow: "hidden", padding: "24px 16px",
+      }}>
+        <AuthStyle />
+        {/* Ambient orbs */}
+        <div className="auth-orb" style={{ width: 350, height: 350, top: "5%", right: "-6%", background: "radial-gradient(circle, rgba(99,102,241,0.1), transparent 70%)", filter: "blur(40px)", animationDuration: "16s" }} />
+        <div className="auth-orb" style={{ width: 280, height: 280, bottom: "8%", left: "-4%", background: "radial-gradient(circle, rgba(168,85,247,0.09), transparent 70%)", filter: "blur(40px)", animationDuration: "20s", animationDelay: "-8s" }} />
+
         <div style={cardStyle}>
           {logoBlock}
-          <div style={{ textAlign: "center", marginBottom: 32, width: "100%" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Create Your Account</div>
-            <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 8 }}>Start managing projects like a pro — free forever.</div>
+
+          <div style={{ textAlign: "center", marginBottom: 28, width: "100%" }}>
+            <div style={{ fontSize: "clamp(20px,5vw,26px)", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", lineHeight: 1.2 }}>Create your account</div>
+            <div style={{ fontSize: 14, color: "#64748b", marginTop: 8, lineHeight: 1.5 }}>Start managing projects like a pro — free forever.</div>
           </div>
+
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
               <label style={fieldLabel}>Full Name</label>
               <input className="auth-input" type="text" value={signupName} onChange={e => setSignupName(e.target.value)} placeholder="Your Name" style={fieldInput} />
             </div>
             <div>
-              <label style={fieldLabel}>Email</label>
+              <label style={fieldLabel}>Email address</label>
               <input className="auth-input" type="email" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} placeholder="you@example.com" style={fieldInput} />
             </div>
-            <div>
-              <label style={fieldLabel}>Password</label>
-              <input className="auth-input" type="password" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} placeholder="Min. 6 characters" style={fieldInput} />
-            </div>
-            <div>
-              <label style={fieldLabel}>Confirm Password</label>
-              <input className="auth-input" type="password" value={signupConfirm} onChange={e => setSignupConfirm(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSignup()} placeholder="Repeat your password" style={fieldInput} />
+            {/* Password row — side by side on wider screens, stacked on mobile */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
+              <style>{`@media (min-width: 420px) { .signup-pass-row { grid-template-columns: 1fr 1fr !important; } }`}</style>
+              <div className="signup-pass-row" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
+                <div>
+                  <label style={fieldLabel}>Password</label>
+                  <input className="auth-input" type="password" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} placeholder="Min. 6 chars" style={fieldInput} />
+                </div>
+                <div>
+                  <label style={fieldLabel}>Confirm Password</label>
+                  <input className="auth-input" type="password" value={signupConfirm} onChange={e => setSignupConfirm(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSignup()} placeholder="Repeat password" style={fieldInput} />
+                </div>
+              </div>
             </div>
             {signupError && (
-              <div style={{ fontSize: 12, color: "#f87171", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "8px 12px" }}>{signupError}</div>
+              <div style={{
+                fontSize: 13, fontWeight: 500,
+                color: "#fca5a5",
+                background: "rgba(239,68,68,0.12)",
+                border: "1px solid rgba(239,68,68,0.25)",
+                borderRadius: 10, padding: "10px 14px",
+                lineHeight: 1.5,
+              }}>{signupError}</div>
             )}
             {primaryBtn("Create Account & Enter →", handleSignup)}
           </div>
-          <div style={{ marginTop: 24, fontSize: 12, color: "#475569", textAlign: "center" }}>
+
+          <div style={{ marginTop: 22, fontSize: 13, color: "#475569", textAlign: "center" }}>
             Already have an account?{" "}
-            <button onClick={() => { setSignupError(""); setViewMode('signin'); }} style={{ background: "none", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: 12, fontWeight: 600, textDecoration: "underline" }}>Sign in instead</button>
+            <button
+              onClick={() => { setSignupError(""); setViewMode('signin'); }}
+              style={{ background: "none", border: "none", color: "#818cf8", cursor: "pointer", fontSize: 13, fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(129,140,248,0.4)" }}
+            >
+              Sign in instead
+            </button>
           </div>
-          <button onClick={() => setViewMode('landing')} style={{ marginTop: 14, background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", gap: 5 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to home
-          </button>
+
+          {/* Trust strip */}
+          <div style={{
+            marginTop: 20, width: "100%",
+            borderTop: "1px solid rgba(99,102,241,0.1)",
+            paddingTop: 16,
+            fontSize: 12, color: "#334155", textAlign: "center", lineHeight: 1.6,
+          }}>
+            🔒 Your data stays in your browser — no cloud, no tracking.
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", width: "100%", maxWidth: "100%", overflowX: "hidden", background: bg, color: text, fontFamily: "'DM Sans','Segoe UI',sans-serif", transition: "all 0.25s ease", boxSizing: "border-box" }}>
+    <div style={{ minHeight: "100vh", width: "100%", maxWidth: "100%", overflowX: "hidden", background: bg, color: text, fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", transition: "all 0.25s ease", boxSizing: "border-box" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { max-width: 100%; overflow-x: hidden; }
+        html, body { max-width: 100%; overflow-x: hidden; font-family: 'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: ${dark ? "#475569" : "#cbd5e1"}; border-radius: 99px; }
@@ -6105,14 +5809,19 @@ function App() {
         @keyframes flash { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes stickyIn { from { opacity: 0; transform: scale(0.88) translateY(24px) rotate(-1.5deg); } to { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } }
         @keyframes stickyWiggle { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-1deg); } 75% { transform: rotate(1deg); } }
-        .tab-btn { border: none; background: transparent; cursor: pointer; transition: all 0.2s ease; font-family: 'DM Sans', sans-serif; }
+        .tab-btn { border: none; background: transparent; cursor: pointer; transition: all 0.2s ease; font-family: 'Plus Jakarta Sans','DM Sans',sans-serif; font-weight: 500; }
         .tab-btn:hover { color: ${accent}; }
+        input, select, textarea, button { font-family: 'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif; }
         input:focus, select:focus, textarea:focus { border-color: ${accent} !important; box-shadow: 0 0 0 3px ${accent}22 !important; }
         .hover-lift:hover { transform: translateY(-2px); box-shadow: ${dark ? "0 8px 24px rgba(0,0,0,0.3)" : "0 8px 24px rgba(0,0,0,0.08)"}; }
 
+        /* ── Improved text contrast ── */
+        p, li, td, th { color: ${dark ? "#cbd5e1" : "#1e293b"}; }
+        label { color: ${dark ? "#94a3b8" : "#475569"}; font-weight: 600; }
+
         /* ── Mobile-first layout helpers ── */
-        .dash-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; min-height: 58px; }
-        @media (min-width: 640px) { .dash-nav { flex-wrap: nowrap; padding: 0 24px; height: 58px; gap: 0; } }
+        .dash-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; min-height: 60px; }
+        @media (min-width: 640px) { .dash-nav { flex-wrap: nowrap; padding: 0 24px; height: 60px; gap: 0; } }
 
         .dash-nav-tabs { display: none; }
         @media (min-width: 640px) { .dash-nav-tabs { display: flex; gap: 2px; flex: 1; overflow: hidden; } }
@@ -6122,10 +5831,10 @@ function App() {
         @media (min-width: 640px) { .dash-nav-tabs-mobile { display: none; } }
 
         .dash-main { padding: 16px; width: 100%; max-width: 100%; }
-        @media (min-width: 768px) { .dash-main { padding: 28px 24px; max-width: 1400px; margin: 0 auto; } }
+        @media (min-width: 768px) { .dash-main { padding: 28px 28px; max-width: 1400px; margin: 0 auto; } }
 
         .workspace-cols { display: grid; grid-template-columns: 1fr; gap: 16px; width: 100%; }
-        @media (min-width: 1024px) { .workspace-cols { grid-template-columns: 1fr 1fr; gap: 20px; } }
+        @media (min-width: 1024px) { .workspace-cols { grid-template-columns: 1fr 1fr; gap: 24px; } }
 
         .meta-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media (min-width: 480px) { .meta-grid { grid-template-columns: 1fr 1fr; } }
@@ -6147,6 +5856,18 @@ function App() {
 
         .touch-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
         .touch-btn:active { transform: scale(0.97); }
+
+        /* ── Project Hub card grid ── */
+        .hub-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+        @media (min-width: 500px) { .hub-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
+
+        /* ── Invoice generator 3-col row → stacked on mobile ── */
+        .invoice-3col { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 560px) { .invoice-3col { grid-template-columns: 1fr 1fr 1fr; } }
+
+        /* ── Timesheet 2-col → stacked ── */
+        .timesheet-2col { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 480px) { .timesheet-2col { grid-template-columns: 1fr 1fr; } }
 
         @media print {
           .no-print { display: none !important; }
@@ -6175,11 +5896,11 @@ function App() {
         {/* Logo — TrES brand identity text */}
         <div style={{ display: "flex", alignItems: "center", marginRight: activeProject ? 16 : 36, flexShrink: 0, userSelect: "none" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 0 }}>
-            <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>T</span>
-            <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>r</span>
-            <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", background: "linear-gradient(to bottom, #3b82f6 0%, #a855f7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", display: "inline-block", lineHeight: 1 }}>E</span>
-            <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>S</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: dark ? "rgba(148,163,184,0.5)" : "rgba(11,19,43,0.4)", marginLeft: 6, alignSelf: "center", letterSpacing: "0.04em" }}>Workspace</span>
+            <span style={{ fontSize: 23, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>T</span>
+            <span style={{ fontSize: 23, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>r</span>
+            <span style={{ fontSize: 23, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", background: "linear-gradient(to bottom, #818cf8 0%, #a855f7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", display: "inline-block", lineHeight: 1 }}>E</span>
+            <span style={{ fontSize: 23, fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", color: dark ? "#ffffff" : "#0B132B", lineHeight: 1 }}>S</span>
+            <span style={{ fontSize: 11.5, fontWeight: 600, color: dark ? "rgba(148,163,184,0.5)" : "rgba(11,19,43,0.4)", marginLeft: 6, alignSelf: "center", letterSpacing: "0.04em" }}>Workspace</span>
           </div>
         </div>
 
@@ -6217,11 +5938,12 @@ function App() {
             { id: "resume",     label: "Executive Resume Studio", icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
           ].map(tab => (
             <button key={tab.id} className="tab-btn" onClick={() => setGlobal("activeTab", tab.id)} style={{
-              padding: "0 14px", height: 58, fontSize: 12.5,
-              fontWeight: activeTab === tab.id ? 600 : 400,
-              color: activeTab === tab.id ? accent : muted,
+              padding: "0 16px", height: 60, fontSize: 13.5,
+              fontWeight: activeTab === tab.id ? 700 : 500,
+              color: activeTab === tab.id ? accent : dark ? "#94a3b8" : "#475569",
               borderBottom: activeTab === tab.id ? `2px solid ${accent}` : "2px solid transparent",
-              display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
+              display: "flex", alignItems: "center", gap: 7, whiteSpace: "nowrap",
+              letterSpacing: "-0.01em",
             }}>
               {tab.icon} {tab.label}
             </button>
@@ -8000,4 +7722,3 @@ function App() {
 }
 
 export default App;
-
