@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom/client';
 
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
@@ -1209,7 +1210,8 @@ function ProjectHub({ projects, onOpenProject, onCreateProject, onDeleteProject,
   const inputS = { width: "100%", padding: "10px 12px", border: `1px solid ${border}`, borderRadius: 9, background: dark ? "#0f172a" : "#f8fafc", color: text, fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box" };
 
   return (
-    <div style={{ minHeight: "calc(100vh - 58px)", padding: "40px 32px", maxWidth: 1200, margin: "0 auto" }}>
+    <div style={{ minHeight: "calc(100vh - 58px)", padding: "28px 16px", width: "100%", maxWidth: "100%", overflowX: "hidden", boxSizing: "border-box" }}>
+      <style>{`.hub-inner { max-width: 1200px; margin: 0 auto; padding: 0 8px; } @media(min-width:640px){ .hub-inner { padding: 0 16px; } }`}</style>
       {/* Toast */}
       {toastVisible && (
         <div style={{
@@ -1226,21 +1228,22 @@ function ProjectHub({ projects, onOpenProject, onCreateProject, onDeleteProject,
           Link Copied!
         </div>
       )}
+      <div className="hub-inner">
       {/* Header */}
-      <div style={{ marginBottom: 40, animation: "fadeIn 0.4s ease" }}>
+      <div style={{ marginBottom: 32, animation: "fadeIn 0.4s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #818cf8)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 8px 24px ${accent}40` }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #818cf8)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 8px 24px ${accent}40`, flexShrink: 0 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           </div>
-          <div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: text, letterSpacing: "-0.03em", fontFamily: "'DM Serif Display', serif" }}>Project Selection Hub</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: "clamp(18px,4vw,26px)", fontWeight: 800, color: text, letterSpacing: "-0.03em", lineHeight: 1.2 }}>Project Selection Hub</div>
             <div style={{ fontSize: 13, color: muted, marginTop: 2 }}>Select a workspace or start a fresh project</div>
           </div>
         </div>
       </div>
 
       {/* Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20, animation: "fadeIn 0.5s ease" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))", gap: 20, animation: "fadeIn 0.5s ease" }}>
 
         {/* New Project Card */}
         {!showNew ? (
@@ -1409,6 +1412,7 @@ function ProjectHub({ projects, onOpenProject, onCreateProject, onDeleteProject,
           <div style={{ fontSize: 13 }}>Click "+ Start New Project" to create your first client workspace.</div>
         </div>
       )}
+      </div>{/* end hub-inner */}
     </div>
   );
 }
@@ -1515,13 +1519,6 @@ function StickyNoteModal({ visible, onClose, note, onSave, dark, projectName }) 
 
 // ─── UtilitiesStudio — three isolated real-browser-processing panels ──────────
 function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyle, labelStyle }) {
-
-  // ════════════════════════════════════════════════════════════════════
-  // CATEGORY NAV STATE
-  // Controls which panel group is visible in the Utilities Studio tab
-  // Values: "documents" | "images" | "developer" | "security"
-  // ════════════════════════════════════════════════════════════════════
-  const [utilCategory, setUtilCategory] = React.useState("documents");
 
   // ════════════════════════════════════════════════════════════════════
   // PANEL 1 — CONVERTER STUDIO
@@ -1799,13 +1796,10 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
     background: surface,
     border: `1px solid ${border}`,
     borderRadius: 16,
-    padding: "18px 16px",
+    padding: 22,
     display: "flex",
     flexDirection: "column",
     gap: 12,
-    width: "100%",
-    maxWidth: "100%",
-    boxSizing: "border-box",
   };
   const panelHeaderStyle = (color) => ({
     display: "flex", alignItems: "center", gap: 10, marginBottom: 4,
@@ -1818,14 +1812,10 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
   });
   const dropZoneStyle = (active, color) => ({
     border: `2px dashed ${active ? color : border}`,
-    borderRadius: 10,
-    padding: "16px 12px",
-    textAlign: "center",
-    cursor: "pointer",
+    borderRadius: 10, padding: "18px 12px",
+    textAlign: "center", cursor: "pointer",
     transition: "border-color 0.2s, background 0.2s",
     background: active ? color + "08" : "transparent",
-    WebkitTapHighlightColor: "transparent",
-    touchAction: "manipulation",
   });
   const statusLine = (msg) => {
     if (!msg) return null;
@@ -1837,7 +1827,6 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
         background: dark ? "#0f172a" : "#f8fafc",
         border: `1px solid ${isOk ? "#10b98140" : isWarn ? "#f59e0b40" : border}`,
         color: isOk ? "#10b981" : isWarn ? "#f59e0b" : muted,
-        wordBreak: "break-word",
       }}>{msg}</div>
     );
   };
@@ -1845,92 +1834,33 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
     <button
       onClick={onClick}
       style={{
-        padding: "12px 16px",
-        borderRadius: 9,
-        border: "none",
-        background: color,
-        color: "#fff",
-        fontSize: 13,
-        fontWeight: 700,
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 7,
-        transition: "filter 0.15s, transform 0.1s",
-        width: "100%",
-        WebkitTapHighlightColor: "transparent",
-        touchAction: "manipulation",
-        userSelect: "none",
+        padding: "9px 0", borderRadius: 9, border: "none",
+        background: color, color: "#fff",
+        fontSize: 13, fontWeight: 700, cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+        transition: "filter 0.15s",
       }}
       onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.12)"}
-      onMouseLeave={e => { e.currentTarget.style.filter = ""; e.currentTarget.style.transform = ""; }}
-      onMouseDown={e => e.currentTarget.style.transform = "scale(0.98)"}
-      onMouseUp={e => e.currentTarget.style.transform = ""}
-      onTouchStart={e => e.currentTarget.style.transform = "scale(0.98)"}
-      onTouchEnd={e => e.currentTarget.style.transform = ""}
+      onMouseLeave={e => e.currentTarget.style.filter = ""}
     >{icon}{label}</button>
   );
   const formatTabRow = (options, value, setter, color) => (
-    <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: 5 }}>
       {options.map(opt => (
-        <button
-          key={opt.value}
-          onClick={() => setter(opt.value)}
-          style={{
-            flex: "1 1 auto",
-            minWidth: 48,
-            padding: "10px 6px",
-            borderRadius: 8,
-            fontSize: 11.5,
-            fontWeight: 700,
-            cursor: "pointer",
-            border: `1px solid ${value === opt.value ? color : border}`,
-            background: value === opt.value ? color : "transparent",
-            color: value === opt.value ? "#fff" : muted,
-            transition: "all 0.15s",
-            WebkitTapHighlightColor: "transparent",
-            touchAction: "manipulation",
-            userSelect: "none",
-          }}
-        >{opt.label}</button>
+        <button key={opt.value} onClick={() => setter(opt.value)} style={{
+          flex: 1, padding: "7px 4px", borderRadius: 8, fontSize: 11.5, fontWeight: 700, cursor: "pointer",
+          border: `1px solid ${value === opt.value ? color : border}`,
+          background: value === opt.value ? color : "transparent",
+          color: value === opt.value ? "#fff" : muted,
+          transition: "all 0.15s",
+        }}>{opt.label}</button>
       ))}
     </div>
   );
 
   // ── Hidden file inputs (all three panels) ────────────────────────────────────
   return (
-    <div style={{ width: "100%", maxWidth: "100%", overflowX: "hidden", boxSizing: "border-box" }}>
-      {/* Responsive grid CSS injected inline */}
-      <style>{`
-        @media (max-width: 1023px) {
-          .utilities-grid { grid-template-columns: 1fr !important; }
-          .utilities-grid-2col { grid-template-columns: 1fr !important; }
-        }
-        @media (min-width: 1024px) {
-          .utilities-grid { grid-template-columns: repeat(3, 1fr) !important; }
-        }
-        .utilities-upload-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          width: 100%;
-          padding: 12px 16px;
-          border-radius: 10px;
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.15s;
-          -webkit-tap-highlight-color: transparent;
-          touch-action: manipulation;
-          user-select: none;
-          box-sizing: border-box;
-        }
-        .utilities-upload-btn:active { transform: scale(0.98); }
-        .utilities-drop-zone:active { transform: scale(0.99); }
-      `}</style>
-
+    <div>
       {/* Hidden inputs */}
       <input ref={cvUploadRef}  type="file" style={{ display: "none" }} onChange={handleCvUploadChange}  />
       <input ref={cpUploadRef}  type="file" style={{ display: "none" }} onChange={handleCpUploadChange}  />
@@ -1938,3175 +1868,281 @@ function UtilitiesStudio({ dark, surface, border, text, muted, accent, inputStyl
       <input ref={mgUploadBRef} type="file" style={{ display: "none" }} onChange={handleMgUploadB}       />
 
       {/* ── Studio Header ── */}
-      <div style={{ marginBottom: 20, width: "100%" }}>
-        <div style={{ fontSize: "clamp(17px, 4vw, 20px)", fontWeight: 800, color: text, letterSpacing: "-0.02em" }}>Utilities Studio</div>
-        <div style={{ fontSize: "clamp(11px, 3vw, 13px)", color: muted, marginTop: 3, lineHeight: 1.5 }}>
-          Browser-native processing engines — convert, compress, merge, and secure files with instant downloads.
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: text, letterSpacing: "-0.02em" }}>Utilities Studio</div>
+        <div style={{ fontSize: 13, color: muted, marginTop: 3 }}>
+          Three isolated browser-native processing engines — convert, compress, and merge real files with instant downloads.
         </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          CATEGORY NAV BAR
-          Horizontally scrollable on mobile, flex-wrap on tablet+
+          THREE-PANEL GRID
           ══════════════════════════════════════════════════════════════════ */}
-      <div style={{
-        display: "flex",
-        gap: 8,
-        marginBottom: 24,
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        paddingBottom: 2,
-        width: "100%",
-      }}>
-        <style>{`.util-cat-bar::-webkit-scrollbar { display: none; }`}</style>
-        {[
-          {
-            id: "documents",
-            label: "Documents",
-            color: "#6366f1",
-            icon: (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-            ),
-          },
-          {
-            id: "images",
-            label: "Images",
-            color: "#f59e0b",
-            icon: (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            ),
-          },
-          {
-            id: "developer",
-            label: "Developer Tools",
-            color: "#06b6d4",
-            icon: (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="16 18 22 12 16 6"/>
-                <polyline points="8 6 2 12 8 18"/>
-              </svg>
-            ),
-          },
-          {
-            id: "security",
-            label: "Security Nodes",
-            color: "#10b981",
-            icon: (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            ),
-          },
-        ].map((cat) => {
-          const isActive = utilCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setUtilCategory(cat.id)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 7,
-                padding: "10px 18px",
-                borderRadius: 10,
-                border: `1.5px solid ${isActive ? cat.color : border}`,
-                background: isActive
-                  ? `linear-gradient(135deg, ${cat.color}22, ${cat.color}10)`
-                  : (dark ? "#1e293b" : "#ffffff"),
-                color: isActive ? cat.color : muted,
-                fontSize: "clamp(11.5px, 2.5vw, 13px)",
-                fontWeight: isActive ? 700 : 500,
-                cursor: "pointer",
-                flexShrink: 0,
-                transition: "all 0.18s ease",
-                boxShadow: isActive ? `0 2px 12px ${cat.color}28` : "none",
-                WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation",
-                userSelect: "none",
-                whiteSpace: "nowrap",
-                letterSpacing: isActive ? "-0.01em" : "normal",
-              }}
-              onMouseEnter={e => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = cat.color + "60";
-                  e.currentTarget.style.color = cat.color;
-                }
-              }}
-              onMouseLeave={e => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = border;
-                  e.currentTarget.style.color = muted;
-                }
-              }}
-              onMouseDown={e => { e.currentTarget.style.transform = "scale(0.97)"; }}
-              onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-              onTouchStart={e => { e.currentTarget.style.transform = "scale(0.97)"; }}
-              onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-            >
-              {/* Colour-tinted icon wrapper */}
-              <span style={{
-                display: "flex", alignItems: "center", justifyContent: "center",
-                width: 24, height: 24, borderRadius: 6,
-                background: isActive ? cat.color + "25" : cat.color + "12",
-                color: isActive ? cat.color : cat.color + "cc",
-                flexShrink: 0,
-                transition: "background 0.18s",
-              }}>
-                {cat.icon}
-              </span>
-              {cat.label}
-              {/* Active indicator pip */}
-              {isActive && (
-                <span style={{
-                  width: 6, height: 6, borderRadius: "50%",
-                  background: cat.color,
-                  marginLeft: 2,
-                  flexShrink: 0,
-                  boxShadow: `0 0 6px ${cat.color}`,
-                }} />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
 
-      {/* ── Category content divider label ── */}
-      <div style={{
-        display: "flex", alignItems: "center", gap: 10, marginBottom: 18,
-      }}>
-        <div style={{
-          height: 1, flex: 1,
-          background: dark ? "#334155" : "#e2e8f0",
-        }} />
-        <div style={{
-          fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: utilCategory === "documents" ? "#6366f1"
-               : utilCategory === "images"    ? "#f59e0b"
-               : utilCategory === "developer" ? "#06b6d4"
-               :                                "#10b981",
-          padding: "3px 10px",
-          borderRadius: 6,
-          background: utilCategory === "documents" ? "#6366f115"
-                    : utilCategory === "images"    ? "#f59e0b15"
-                    : utilCategory === "developer" ? "#06b6d415"
-                    :                                "#10b98115",
-          border: `1px solid ${
-            utilCategory === "documents" ? "#6366f130"
-          : utilCategory === "images"    ? "#f59e0b30"
-          : utilCategory === "developer" ? "#06b6d430"
-          :                                "#10b98130"
-          }`,
-          whiteSpace: "nowrap",
-        }}>
-          {{
-            documents: "Documents",
-            images:    "Images",
-            developer: "Developer Tools",
-            security:  "Security Nodes",
-          }[utilCategory]}
+        {/* ─────────────────────────────────────────────────────────────────
+            PANEL 1 — CONVERTER STUDIO
+            ───────────────────────────────────────────────────────────────── */}
+        <div style={panelStyle}>
+          <div style={panelHeaderStyle("#6366f1")}>
+            <div style={iconBubble("#6366f1")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: text }}>Converter Studio</div>
+              <div style={{ fontSize: 10.5, color: "#6366f1", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Text &amp; File Export</div>
+            </div>
+          </div>
+
+          {/* Drop zone */}
+          <div
+            style={dropZoneStyle(cvFileLabel !== "Drop or choose a file to pre-fill", "#6366f1")}
+            onDragOver={e => e.preventDefault()}
+            onDrop={handleCvDrop}
+            onClick={() => cvUploadRef.current && cvUploadRef.current.click()}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 5 }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div style={{ fontSize: 11.5, color: cvFileLabel !== "Drop or choose a file to pre-fill" ? "#6366f1" : muted, fontWeight: 600 }}>{cvFileLabel}</div>
+          </div>
+
+          {/* Text area */}
+          <div>
+            <label style={labelStyle}>Input Text</label>
+            <textarea
+              rows={6}
+              style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "monospace", fontSize: 12 }}
+              placeholder="Paste or type text here, or drop a file above…"
+              value={cvText}
+              onChange={e => setCvText(e.target.value)}
+            />
+          </div>
+
+          {/* Output filename */}
+          <div>
+            <label style={labelStyle}>Output Filename</label>
+            <input style={inputStyle} value={cvFileName} onChange={e => setCvFileName(e.target.value)} placeholder="output" />
+          </div>
+
+          {/* Format selector */}
+          <div>
+            <label style={labelStyle}>Export Format</label>
+            {formatTabRow(
+              [{ value: "txt", label: ".TXT" }, { value: "json", label: ".JSON" }, { value: "html", label: ".HTML" }],
+              cvFormat, setCvFormat, "#6366f1"
+            )}
+          </div>
+
+          {/* Status */}
+          {statusLine(cvStatus)}
+
+          {/* Convert & Download */}
+          {actionBtn(
+            "Convert & Download",
+            handleCvConvert,
+            "linear-gradient(135deg, #6366f1, #818cf8)",
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          )}
         </div>
-        <div style={{
-          height: 1, flex: 1,
-          background: dark ? "#334155" : "#e2e8f0",
-        }} />
-      </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          CATEGORY: DOCUMENTS
-          Three tool cards:
-            1. Converter Studio      — textarea + format select → Blob download
-            2. Document Merger Core  — two textareas → joined Blob download
-            3. Heavy Document Node   — PDF / DOCX / PPTX → fetch('/api/convert/…')
-                                       with local try/catch fallback for Vercel
-          ══════════════════════════════════════════════════════════════════ */}
-      {utilCategory === "documents" && (() => {
-
-        /* ── LOCAL STATE for all three cards ─────────────────────────────
-           All useState / useRef calls must be inside a React component, so
-           we embed them in a tiny inner functional component rendered here. */
-
-        function DocumentsModule({ dark: dk, surface: sf, border: bd, text: tx,
-                                   muted: mu, accent: ac, inputStyle: iS, labelStyle: lS,
-                                   /* wired props from outer UtilitiesStudio scope */
-                                   cvText, setCvText, cvFormat, setCvFormat,
-                                   cvFileName, setCvFileName, cvFileLabel,
-                                   cvStatus, cvUploadRef,
-                                   handleCvDrop, handleCvConvert,
-                                   mgBlockA, setMgBlockA, mgBlockB, setMgBlockB,
-                                   mgFileALabel, mgFileBLabel,
-                                   mgSeparator, setMgSeparator,
-                                   mgFileName, setMgFileName, mgFormat, setMgFormat,
-                                   mgStatus, mgUploadARef, mgUploadBRef,
-                                   handleMgDropA, handleMgDropB,
-                                   handleMgUploadA, handleMgUploadB,
-                                   handleMerge,
-                                   handleCvUploadChange,
-                                   formatTabRow, actionBtn, statusLine,
-                                   panelStyle, panelHeaderStyle, iconBubble, dropZoneStyle }) {
-
-          /* Heavy Document Node local state */
-          const [hdnInput,      setHdnInput]      = React.useState("");
-          const [hdnFilename,   setHdnFilename]   = React.useState("document");
-          const [hdnStatus,     setHdnStatus]     = React.useState("");
-          const [hdnLoading,    setHdnLoading]    = React.useState(null); // "pdf"|"docx"|"pptx"|null
-          const hdnUploadRef = React.useRef(null);
-
-          /* ── HDN: read uploaded file into textarea ── */
-          const handleHdnFileRead = (file) => {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload  = (evt) => { setHdnInput(evt.target.result || ""); };
-            reader.onerror = () => { setHdnStatus("⚠ Could not read file."); };
-            reader.readAsText(file);
-          };
-          const handleHdnUpload = (e) => {
-            const file = e.target.files && e.target.files[0];
-            if (file) handleHdnFileRead(file);
-            e.target.value = "";
-          };
-          const handleHdnDrop = (e) => {
-            e.preventDefault();
-            const file = e.dataTransfer.files && e.dataTransfer.files[0];
-            if (file) handleHdnFileRead(file);
-          };
-
-          /* ── HDN: async fetch → /api/convert/:format with Blob fallback ── */
-          const handleHdnConvert = async (format) => {
-            if (!hdnInput.trim()) {
-              setHdnStatus("⚠ Add content before converting.");
-              setTimeout(() => setHdnStatus(""), 2500);
-              return;
-            }
-            setHdnLoading(format);
-            setHdnStatus(`⏳ Sending to conversion engine — ${format.toUpperCase()}…`);
-
-            try {
-              /* Backend-ready: POST to /api/convert/:format
-                 Expects response Content-Disposition: attachment + binary body.
-                 Replace the URL and payload shape to match your server contract. */
-              const res = await fetch(`/api/convert/${format}`, {
-                method:  "POST",
-                headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({
-                  content:  hdnInput,
-                  filename: hdnFilename || "document",
-                  format,
-                }),
-              });
-
-              if (!res.ok) throw new Error(`Server responded ${res.status}: ${res.statusText}`);
-
-              const contentType = res.headers.get("Content-Type") || "application/octet-stream";
-              const blob = await res.blob();
-              const url  = URL.createObjectURL(new Blob([blob], { type: contentType }));
-              const a    = document.createElement("a");
-              a.href     = url;
-              a.download = `${hdnFilename || "document"}.${format}`;
-              document.body.appendChild(a);
-              a.click();
-              setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
-              setHdnStatus(`✓ ${format.toUpperCase()} downloaded as ${a.download}`);
-              setTimeout(() => setHdnStatus(""), 4000);
-
-            } catch (err) {
-              /* ── Local Vercel/dev fallback ──────────────────────────────
-                 API route not yet deployed → synthesise a plain-text stand-in
-                 so the user gets a downloadable file and clear guidance.      */
-              console.warn("[Heavy Document Node] API unavailable:", err.message);
-
-              const iso      = new Date().toISOString();
-              const safeName = (hdnFilename || "document").replace(/[^a-z0-9_\-]/gi, "_");
-
-              /* Build a descriptive fallback payload per format */
-              let fallbackContent = "";
-              let fallbackMime    = "text/plain";
-              let fallbackExt     = "txt";
-
-              if (format === "pdf") {
-                fallbackContent = [
-                  `%PDF-1.4 PLACEHOLDER — Generated by TrES Heavy Document Node`,
-                  `Filename : ${safeName}.pdf`,
-                  `Created  : ${iso}`,
-                  ``,
-                  `── CONTENT ──────────────────────────────────────────────`,
-                  hdnInput,
-                  ``,
-                  `── NOTE ────────────────────────────────────────────────`,
-                  `Real PDF rendering requires the /api/convert/pdf backend route.`,
-                  `Connect your server and this button will produce a true PDF binary.`,
-                ].join("\n");
-                fallbackMime = "text/plain";
-                fallbackExt  = "pdf.txt";
-              } else if (format === "docx") {
-                fallbackContent = [
-                  `DOCX PLACEHOLDER — Generated by TrES Heavy Document Node`,
-                  `Filename : ${safeName}.docx`,
-                  `Created  : ${iso}`,
-                  ``,
-                  `── CONTENT ──────────────────────────────────────────────`,
-                  hdnInput,
-                  ``,
-                  `── NOTE ────────────────────────────────────────────────`,
-                  `Real DOCX rendering requires the /api/convert/docx backend route.`,
-                  `Connect your server (e.g. python-docx, Pandoc) and this button`,
-                  `will produce a fully formatted Word document binary.`,
-                ].join("\n");
-                fallbackMime = "text/plain";
-                fallbackExt  = "docx.txt";
-              } else if (format === "pptx") {
-                fallbackContent = [
-                  `PPTX PLACEHOLDER — Generated by TrES Heavy Document Node`,
-                  `Filename : ${safeName}.pptx`,
-                  `Created  : ${iso}`,
-                  ``,
-                  `── SLIDE CONTENT ────────────────────────────────────────`,
-                  hdnInput,
-                  ``,
-                  `── NOTE ────────────────────────────────────────────────`,
-                  `Real PPTX rendering requires the /api/convert/pptx backend route.`,
-                  `Connect your server (e.g. python-pptx) and this button`,
-                  `will produce a fully formatted PowerPoint binary.`,
-                ].join("\n");
-                fallbackMime = "text/plain";
-                fallbackExt  = "pptx.txt";
-              }
-
-              const blob = new Blob([fallbackContent], { type: fallbackMime });
-              const url  = URL.createObjectURL(blob);
-              const a    = document.createElement("a");
-              a.href     = url;
-              a.download = `${safeName}_PREVIEW.${fallbackExt}`;
-              document.body.appendChild(a);
-              a.click();
-              setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
-
-              setHdnStatus(`⚠ API offline — preview file downloaded. Wire /api/convert/${format} for real output.`);
-              setTimeout(() => setHdnStatus(""), 6000);
-            } finally {
-              setHdnLoading(null);
-            }
-          };
-
-          /* ── Shared micro-helpers scoped to this inner component ── */
-          const sLine = (msg) => {
-            if (!msg) return null;
-            const isOk   = msg.startsWith("✓");
-            const isWarn = msg.startsWith("⚠");
-            const isInfo = msg.startsWith("⏳");
-            return (
-              <div style={{
-                fontSize: "clamp(10.5px, 2.5vw, 11.5px)", padding: "8px 12px",
-                borderRadius: 8, fontFamily: "monospace",
-                background: dk ? "#0f172a" : "#f8fafc",
-                border: `1px solid ${isOk ? "#10b98140" : isWarn ? "#f59e0b40" : isInfo ? "#6366f140" : bd}`,
-                color:  isOk ? "#10b981" : isWarn ? "#f59e0b" : isInfo ? "#818cf8" : mu,
-                wordBreak: "break-word", lineHeight: 1.5,
-              }}>{msg}</div>
-            );
-          };
-
-          const hdnBtn = (label, fmt, color, icon, isLoading) => (
-            <button
-              onClick={() => handleHdnConvert(fmt)}
-              disabled={!!hdnLoading}
-              style={{
-                flex: "1 1 auto", minWidth: 100,
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-                padding: "12px 10px", borderRadius: 10,
-                border: `1.5px solid ${color}40`,
-                background: isLoading
-                  ? color + "20"
-                  : `linear-gradient(135deg, ${color}18, ${color}08)`,
-                color: hdnLoading && !isLoading ? mu : color,
-                fontSize: "clamp(11px, 2.5vw, 12.5px)", fontWeight: 700,
-                cursor: hdnLoading ? "not-allowed" : "pointer",
-                transition: "all 0.18s",
-                WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation",
-                userSelect: "none",
-                opacity: hdnLoading && !isLoading ? 0.45 : 1,
-                boxShadow: isLoading ? `0 0 0 2px ${color}30` : "none",
-              }}
-              onMouseEnter={e => { if (!hdnLoading) { e.currentTarget.style.background = color + "28"; e.currentTarget.style.borderColor = color + "80"; } }}
-              onMouseLeave={e => { if (!hdnLoading) { e.currentTarget.style.background = `linear-gradient(135deg, ${color}18, ${color}08)`; e.currentTarget.style.borderColor = color + "40"; } }}
-              onMouseDown={e => { if (!hdnLoading) e.currentTarget.style.transform = "scale(0.97)"; }}
-              onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-              onTouchStart={e => { if (!hdnLoading) e.currentTarget.style.transform = "scale(0.97)"; }}
-              onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-            >
-              {isLoading
-                ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 0.8s linear infinite" }}><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2 a10 10 0 0 1 10 10"/></svg>
-                : icon}
-              {isLoading ? "Processing…" : label}
-            </button>
-          );
-
-          /* ── RENDER ─────────────────────────────────────────────── */
-          return (
-            <div
-              className="utilities-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: 18,
-                width: "100%",
-                maxWidth: "100%",
-                boxSizing: "border-box",
-              }}
-            >
-
-              {/* ═══════════════════════════════════════════════════════
-                  CARD 1 — CONVERTER STUDIO
-                  textarea + format select → Blob/URL.createObjectURL
-                  ═══════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                {/* Header */}
-                <div style={panelHeaderStyle("#6366f1")}>
-                  <div style={iconBubble("#6366f1")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="16 3 21 3 21 8"/>
-                      <line x1="4" y1="20" x2="21" y2="3"/>
-                      <polyline points="21 16 21 21 16 21"/>
-                      <line x1="15" y1="15" x2="21" y2="21"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Converter Studio</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#6366f1", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Text → TXT / JSON / HTML</div>
-                  </div>
-                  {/* Badge */}
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#6366f122", color: "#6366f1", letterSpacing: "0.07em", flexShrink: 0 }}>CONVERT</span>
-                </div>
-
-                {/* Instruction strip */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dark ? "#0f172a50" : "#6366f108", border: `1px solid #6366f120` }}>
-                  Type or paste any text below, choose your export format, name the file, then click <strong style={{ color: "#6366f1" }}>Process</strong>. The browser will instantly download a real file via <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#ede9fe", borderRadius: 4, padding: "1px 5px", color: "#6366f1" }}>Blob + URL.createObjectURL</code>.
-                </div>
-
-                {/* Drop zone (wired to existing cvUploadRef handler) */}
-                <div
-                  className="utilities-drop-zone"
-                  style={dropZoneStyle(cvFileLabel !== "Drop or choose a file to pre-fill", "#6366f1")}
-                  onDragOver={e => e.preventDefault()}
-                  onDrop={handleCvDrop}
-                  onClick={() => cvUploadRef.current && cvUploadRef.current.click()}
-                >
-                  <input
-                    ref={cvUploadRef}
-                    type="file"
-                    style={{ display: "none" }}
-                    onChange={handleCvUploadChange}
-                  />
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 5 }}>
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                  <div style={{ fontSize: "clamp(10px, 3vw, 11.5px)", color: cvFileLabel !== "Drop or choose a file to pre-fill" ? "#6366f1" : mu, fontWeight: 600 }}>{cvFileLabel}</div>
-                  <div style={{ fontSize: 10, color: mu, marginTop: 3 }}>Tap to browse · or drag &amp; drop a .txt / .json / .html file</div>
-                </div>
-
-                {/* Input textarea */}
-                <div>
-                  <label style={lS}>Input Text</label>
-                  <textarea
-                    rows={6}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box" }}
-                    placeholder="Paste or type text here…"
-                    value={cvText}
-                    onChange={e => setCvText(e.target.value)}
-                  />
-                </div>
-
-                {/* Controls row — filename + format select */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "end" }}>
-                  <div>
-                    <label style={lS}>Output Filename</label>
-                    <input
-                      style={{ ...iS, width: "100%", boxSizing: "border-box" }}
-                      value={cvFileName}
-                      onChange={e => setCvFileName(e.target.value)}
-                      placeholder="output"
-                    />
-                  </div>
-                  <div>
-                    <label style={lS}>Format</label>
-                    <select
-                      value={cvFormat}
-                      onChange={e => setCvFormat(e.target.value)}
-                      style={{
-                        ...iS,
-                        width: "100%", boxSizing: "border-box",
-                        cursor: "pointer",
-                        paddingRight: 28,
-                        appearance: "none",
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "right 10px center",
-                      }}
-                    >
-                      <option value="txt">.TXT — Plain Text</option>
-                      <option value="json">.JSON — Structured</option>
-                      <option value="html">.HTML — Webpage</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Status */}
-                {sLine(cvStatus)}
-
-                {/* Process button — Blob + URL.createObjectURL */}
-                {actionBtn(
-                  "Process & Download",
-                  handleCvConvert,
-                  "linear-gradient(135deg, #6366f1, #818cf8)",
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                )}
-
-                {/* Engine note */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  100% browser-native · no server · no upload · instant download
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════
-                  CARD 2 — DOCUMENT MERGER CORE
-                  Two textareas → joined with headers → Blob download
-                  ═══════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                {/* Header */}
-                <div style={panelHeaderStyle("#10b981")}>
-                  <div style={iconBubble("#10b981")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                      <polyline points="2 17 12 22 22 17"/>
-                      <polyline points="2 12 12 17 22 12"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Document Merger Core</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#10b981", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Two Blocks → One File</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#10b98122", color: "#10b981", letterSpacing: "0.07em", flexShrink: 0 }}>MERGE</span>
-                </div>
-
-                {/* Instruction strip */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#10b98108", border: "1px solid #10b98120" }}>
-                  Fill in both blocks (or drop files), choose a separator style, then click <strong style={{ color: "#10b981" }}>Compile</strong> to download a single unified text file with clear section headers.
-                </div>
-
-                {/* Block A */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ ...lS, marginBottom: 0 }}>Block A — Document&nbsp;One</label>
-                    {/* drop trigger */}
-                    <div
-                      className="utilities-drop-zone"
-                      style={{
-                        ...dropZoneStyle(mgFileALabel !== "Drop or choose File A", "#10b981"),
-                        padding: "5px 12px", fontSize: 10.5, display: "flex",
-                        alignItems: "center", gap: 5, borderRadius: 7,
-                      }}
-                      onDragOver={e => e.preventDefault()}
-                      onDrop={handleMgDropA}
-                      onClick={() => mgUploadARef.current && mgUploadARef.current.click()}
-                    >
-                      <input ref={mgUploadARef} type="file" style={{ display: "none" }} onChange={handleMgUploadA} />
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                      <span style={{ color: mgFileALabel !== "Drop or choose File A" ? "#10b981" : mu, fontWeight: 600 }}>{mgFileALabel}</span>
-                    </div>
-                  </div>
-                  <textarea
-                    rows={5}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box", borderColor: mgBlockA.trim() ? "#10b98140" : undefined }}
-                    placeholder="Paste or type the first document…"
-                    value={mgBlockA}
-                    onChange={e => setMgBlockA(e.target.value)}
-                  />
-                  {mgBlockA.trim() && (
-                    <div style={{ fontSize: 10, color: "#10b981", fontWeight: 600 }}>
-                      {mgBlockA.trim().split(/\s+/).length} words · {new Blob([mgBlockA]).size.toLocaleString()} bytes
-                    </div>
-                  )}
-                </div>
-
-                {/* Separator visual */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{ flex: 1, height: 1, background: dk ? "#334155" : "#e2e8f0" }} />
-                  <div>
-                    <label style={{ ...lS, marginBottom: 4, textAlign: "center", display: "block" }}>Separator</label>
-                    {formatTabRow(
-                      [
-                        { value: "divider", label: "── Rule ──" },
-                        { value: "newline", label: "↵ Blank" },
-                        { value: "comment", label: "/* mark */" },
-                        { value: "none",    label: "None" },
-                      ],
-                      mgSeparator, setMgSeparator, "#10b981"
-                    )}
-                  </div>
-                  <div style={{ flex: 1, height: 1, background: dk ? "#334155" : "#e2e8f0" }} />
-                </div>
-
-                {/* Block B */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ ...lS, marginBottom: 0 }}>Block B — Document&nbsp;Two</label>
-                    <div
-                      className="utilities-drop-zone"
-                      style={{
-                        ...dropZoneStyle(mgFileBLabel !== "Drop or choose File B", "#10b981"),
-                        padding: "5px 12px", fontSize: 10.5, display: "flex",
-                        alignItems: "center", gap: 5, borderRadius: 7,
-                      }}
-                      onDragOver={e => e.preventDefault()}
-                      onDrop={handleMgDropB}
-                      onClick={() => mgUploadBRef.current && mgUploadBRef.current.click()}
-                    >
-                      <input ref={mgUploadBRef} type="file" style={{ display: "none" }} onChange={handleMgUploadB} />
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                      <span style={{ color: mgFileBLabel !== "Drop or choose File B" ? "#10b981" : mu, fontWeight: 600 }}>{mgFileBLabel}</span>
-                    </div>
-                  </div>
-                  <textarea
-                    rows={5}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box", borderColor: mgBlockB.trim() ? "#10b98140" : undefined }}
-                    placeholder="Paste or type the second document…"
-                    value={mgBlockB}
-                    onChange={e => setMgBlockB(e.target.value)}
-                  />
-                  {mgBlockB.trim() && (
-                    <div style={{ fontSize: 10, color: "#10b981", fontWeight: 600 }}>
-                      {mgBlockB.trim().split(/\s+/).length} words · {new Blob([mgBlockB]).size.toLocaleString()} bytes
-                    </div>
-                  )}
-                </div>
-
-                {/* Output row */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "end" }}>
-                  <div>
-                    <label style={lS}>Output Filename</label>
-                    <input style={{ ...iS, width: "100%", boxSizing: "border-box" }} value={mgFileName} onChange={e => setMgFileName(e.target.value)} placeholder="merged-output" />
-                  </div>
-                  <div>
-                    <label style={lS}>Format</label>
-                    <select
-                      value={mgFormat}
-                      onChange={e => setMgFormat(e.target.value)}
-                      style={{
-                        ...iS, width: "100%", boxSizing: "border-box",
-                        cursor: "pointer", paddingRight: 28, appearance: "none",
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center",
-                      }}
-                    >
-                      <option value="txt">.TXT — Plain Text</option>
-                      <option value="json">.JSON — Structured</option>
-                      <option value="html">.HTML — Webpage</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Status */}
-                {sLine(mgStatus)}
-
-                {/* Compile button — Blob + URL.createObjectURL */}
-                {actionBtn(
-                  "Compile & Download",
-                  handleMerge,
-                  "linear-gradient(135deg, #10b981, #059669)",
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                )}
-
-                {/* Engine note */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  Blocks joined with clear section headers · Blob download · no upload required
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════
-                  CARD 3 — HEAVY DOCUMENT NODE
-                  async fetch('/api/convert/:format') → Blob download
-                  try/catch fallback for local/Vercel testing
-                  ═══════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                {/* Header */}
-                <div style={panelHeaderStyle("#f59e0b")}>
-                  <div style={iconBubble("#f59e0b")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Heavy Document Node</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#f59e0b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>PDF · DOCX · PPTX Export</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#f59e0b22", color: "#f59e0b", letterSpacing: "0.07em", flexShrink: 0 }}>BACKEND</span>
-                </div>
-
-                {/* API route info banner */}
-                <div style={{
-                  fontSize: "clamp(10px, 2.5vw, 11.5px)", color: mu, lineHeight: 1.6,
-                  padding: "10px 13px", borderRadius: 9,
-                  background: dk ? "#0f172a" : "#fffbeb",
-                  border: "1px solid #f59e0b30",
-                  display: "flex", flexDirection: "column", gap: 4,
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <strong style={{ color: "#f59e0b", fontSize: "clamp(10px, 2vw, 11px)" }}>Backend-ready · async fetch architecture</strong>
-                  </div>
-                  <span>
-                    Each button fires <code style={{ fontSize: 10, background: dk ? "#1e293b" : "#fef3c7", borderRadius: 4, padding: "1px 5px", color: "#d97706" }}>POST /api/convert/:format</code> and streams the binary response back as a real file download.
-                    While the API route is offline, a descriptive preview file is downloaded instantly as a local fallback.
-                  </span>
-                </div>
-
-                {/* Drop zone */}
-                <div
-                  className="utilities-drop-zone"
-                  style={dropZoneStyle(false, "#f59e0b")}
-                  onDragOver={e => e.preventDefault()}
-                  onDrop={handleHdnDrop}
-                  onClick={() => hdnUploadRef.current && hdnUploadRef.current.click()}
-                >
-                  <input ref={hdnUploadRef} type="file" style={{ display: "none" }} onChange={handleHdnUpload} />
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 4 }}>
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                  <div style={{ fontSize: "clamp(10px, 3vw, 11.5px)", color: mu, fontWeight: 600 }}>Drop a file to pre-fill content · or tap to browse</div>
-                </div>
-
-                {/* Content textarea */}
-                <div>
-                  <label style={lS}>Document Content</label>
-                  <textarea
-                    rows={7}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box" }}
-                    placeholder={"Type or paste document content here…\n\nThis text will be sent to the conversion API as the document body.\nStructure it clearly — headings, paragraphs, bullet points."}
-                    value={hdnInput}
-                    onChange={e => setHdnInput(e.target.value)}
-                  />
-                  {hdnInput.trim() && (
-                    <div style={{ fontSize: 10, color: mu, marginTop: 4, display: "flex", gap: 12 }}>
-                      <span style={{ color: "#f59e0b", fontWeight: 600 }}>{hdnInput.trim().split(/\s+/).length} words</span>
-                      <span>{hdnInput.trim().split("\n").length} lines</span>
-                      <span>{new Blob([hdnInput]).size.toLocaleString()} bytes</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Filename */}
-                <div>
-                  <label style={lS}>Output Filename (no extension)</label>
-                  <input
-                    style={{ ...iS, width: "100%", boxSizing: "border-box" }}
-                    value={hdnFilename}
-                    onChange={e => setHdnFilename(e.target.value)}
-                    placeholder="document"
-                  />
-                </div>
-
-                {/* Format buttons — three distinct conversion targets */}
-                <div>
-                  <label style={lS}>Export Format — select one to convert</label>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-
-                    {/* PDF */}
-                    {hdnBtn(
-                      "Export PDF",
-                      "pdf",
-                      "#ef4444",
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                      </svg>,
-                      hdnLoading === "pdf"
-                    )}
-
-                    {/* DOCX */}
-                    {hdnBtn(
-                      "Export DOCX",
-                      "docx",
-                      "#3b82f6",
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                      </svg>,
-                      hdnLoading === "docx"
-                    )}
-
-                    {/* PPTX */}
-                    {hdnBtn(
-                      "Export PPTX",
-                      "pptx",
-                      "#a855f7",
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2"/>
-                        <line x1="8" y1="21" x2="16" y2="21"/>
-                        <line x1="12" y1="17" x2="12" y2="21"/>
-                      </svg>,
-                      hdnLoading === "pptx"
-                    )}
-
-                  </div>
-                </div>
-
-                {/* API endpoint reference table */}
-                <div style={{
-                  borderRadius: 9, border: `1px solid ${bd}`,
-                  background: dk ? "#0f172a" : "#f8fafc",
-                  overflow: "hidden", fontSize: "clamp(9.5px, 2vw, 11px)",
-                }}>
-                  <div style={{ padding: "7px 12px", borderBottom: `1px solid ${bd}`, fontWeight: 700, color: mu, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: 9.5 }}>
-                    API Route Contract
-                  </div>
-                  {[
-                    { fmt: "PDF",  route: "POST /api/convert/pdf",  ct: "application/pdf",          color: "#ef4444" },
-                    { fmt: "DOCX", route: "POST /api/convert/docx", ct: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", color: "#3b82f6" },
-                    { fmt: "PPTX", route: "POST /api/convert/pptx", ct: "application/vnd.openxmlformats-officedocument.presentationml.presentation", color: "#a855f7" },
-                  ].map(r => (
-                    <div key={r.fmt} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "7px 12px", borderBottom: `1px solid ${bd}30` }}>
-                      <span style={{ fontSize: 8, fontWeight: 800, padding: "2px 6px", borderRadius: 4, background: r.color + "20", color: r.color, letterSpacing: "0.05em", flexShrink: 0, marginTop: 1 }}>{r.fmt}</span>
-                      <div>
-                        <code style={{ color: mu, fontSize: "clamp(9px, 2vw, 10.5px)" }}>{r.route}</code>
-                        <div style={{ color: mu, fontSize: 9, marginTop: 1, opacity: 0.7 }}>Content-Type: {r.ct}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Status */}
-                {sLine(hdnStatus)}
-
-                {/* Engine note */}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  async/await · try/catch local fallback · Blob + URL.createObjectURL pipeline
-                </div>
-              </div>
-
+        {/* ─────────────────────────────────────────────────────────────────
+            PANEL 2 — COMPRESSION NODE
+            ───────────────────────────────────────────────────────────────── */}
+        <div style={panelStyle}>
+          <div style={panelHeaderStyle("#06b6d4")}>
+            <div style={iconBubble("#06b6d4")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+                <line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/>
+              </svg>
             </div>
-          );
-        }
-
-        /* Render the inner component, forwarding all outer-scope props & handlers */
-        return (
-          <DocumentsModule
-            dark={dark} surface={surface} border={border} text={text} muted={muted} accent={accent}
-            inputStyle={inputStyle} labelStyle={labelStyle}
-            cvText={cvText} setCvText={setCvText}
-            cvFormat={cvFormat} setCvFormat={setCvFormat}
-            cvFileName={cvFileName} setCvFileName={setCvFileName}
-            cvFileLabel={cvFileLabel} cvStatus={cvStatus}
-            cvUploadRef={cvUploadRef}
-            handleCvDrop={handleCvDrop}
-            handleCvConvert={handleCvConvert}
-            handleCvUploadChange={handleCvUploadChange}
-            mgBlockA={mgBlockA} setMgBlockA={setMgBlockA}
-            mgBlockB={mgBlockB} setMgBlockB={setMgBlockB}
-            mgFileALabel={mgFileALabel} mgFileBLabel={mgFileBLabel}
-            mgSeparator={mgSeparator} setMgSeparator={setMgSeparator}
-            mgFileName={mgFileName} setMgFileName={setMgFileName}
-            mgFormat={mgFormat} setMgFormat={setMgFormat}
-            mgStatus={mgStatus}
-            mgUploadARef={mgUploadARef} mgUploadBRef={mgUploadBRef}
-            handleMgDropA={handleMgDropA} handleMgDropB={handleMgDropB}
-            handleMgUploadA={handleMgUploadA} handleMgUploadB={handleMgUploadB}
-            handleMerge={handleMerge}
-            formatTabRow={formatTabRow}
-            actionBtn={actionBtn}
-            statusLine={statusLine}
-            panelStyle={panelStyle}
-            panelHeaderStyle={panelHeaderStyle}
-            iconBubble={iconBubble}
-            dropZoneStyle={dropZoneStyle}
-          />
-        );
-      })()}{/* end utilCategory === "documents" IIFE */}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          CATEGORY: IMAGES — placeholder, ready for image tools in next phase
-          ══════════════════════════════════════════════════════════════════ */}
-      {utilCategory === "images" && (() => {
-
-        /* ══════════════════════════════════════════════════════════════════
-           ImagesModule — inner component so useState/useRef hooks are legal
-           Three cards, all 100% client-side canvas processing, no uploads.
-           ══════════════════════════════════════════════════════════════════ */
-        function ImagesModule({ dark: dk, surface: sf, border: bd, text: tx, muted: mu,
-                                inputStyle: iS, labelStyle: lS,
-                                panelStyle, panelHeaderStyle, iconBubble, dropZoneStyle }) {
-
-          /* ── Shared panel helpers ── */
-          const sLine = (msg) => {
-            if (!msg) return null;
-            const isOk   = msg.startsWith("✓");
-            const isWarn = msg.startsWith("⚠");
-            const isInfo = msg.startsWith("⏳");
-            return (
-              <div style={{
-                fontSize: "clamp(10.5px, 2.5vw, 11.5px)", padding: "8px 12px",
-                borderRadius: 8, fontFamily: "monospace",
-                background: dk ? "#0f172a" : "#f8fafc",
-                border: `1px solid ${isOk ? "#10b98140" : isWarn ? "#f59e0b40" : isInfo ? "#6366f140" : bd}`,
-                color: isOk ? "#10b981" : isWarn ? "#f59e0b" : isInfo ? "#818cf8" : mu,
-                wordBreak: "break-word", lineHeight: 1.5,
-              }}>{msg}</div>
-            );
-          };
-
-          const processBtn = (label, onClick, color, icon, disabled) => (
-            <button
-              onClick={onClick}
-              disabled={!!disabled}
-              style={{
-                width: "100%", display: "flex", alignItems: "center",
-                justifyContent: "center", gap: 8,
-                padding: "12px 16px", borderRadius: 10, border: "none",
-                background: disabled ? (dk ? "#1e293b" : "#e2e8f0") : color,
-                color: disabled ? mu : "#fff",
-                fontSize: "clamp(12px, 3vw, 13px)", fontWeight: 700,
-                cursor: disabled ? "not-allowed" : "pointer",
-                transition: "filter 0.15s, transform 0.1s",
-                WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation", userSelect: "none",
-                opacity: disabled ? 0.5 : 1,
-              }}
-              onMouseEnter={e => { if (!disabled) e.currentTarget.style.filter = "brightness(1.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.filter = ""; e.currentTarget.style.transform = ""; }}
-              onMouseDown={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-              onTouchStart={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-            >
-              {icon}{label}
-            </button>
-          );
-
-          /* ── Helper: load a File into an HTMLImageElement ── */
-          const loadImageFromFile = (file) => new Promise((resolve, reject) => {
-            const url = URL.createObjectURL(file);
-            const img = new Image();
-            img.onload  = () => { resolve(img); URL.revokeObjectURL(url); };
-            img.onerror = () => { reject(new Error("Could not decode image.")); URL.revokeObjectURL(url); };
-            img.src = url;
-          });
-
-          /* ── Helper: trigger anchor download from a data-URL ── */
-          const triggerDownload = (dataUrl, filename) => {
-            const a = document.createElement("a");
-            a.href     = dataUrl;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => document.body.removeChild(a), 300);
-          };
-
-          /* ══════════════════════════════════════════════════════
-             CARD 1 — IMAGE FORMAT SWAP
-             State
-             ══════════════════════════════════════════════════════ */
-          const [fmtFile,     setFmtFile]     = React.useState(null);
-          const [fmtPreview,  setFmtPreview]  = React.useState(null);   // data-URL preview
-          const [fmtMeta,     setFmtMeta]     = React.useState(null);   // { w, h, size, name }
-          const [fmtStatus,   setFmtStatus]   = React.useState("");
-          const [fmtBusy,     setFmtBusy]     = React.useState(false);
-          const fmtRef = React.useRef(null);
-
-          const handleFmtPick = (file) => {
-            if (!file || !file.type.startsWith("image/")) {
-              setFmtStatus("⚠ Please select a valid image file (PNG, JPEG, WebP, GIF…).");
-              return;
-            }
-            setFmtStatus("");
-            setFmtPreview(null);
-            setFmtMeta(null);
-            setFmtFile(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const dataUrl = e.target.result;
-              const img = new Image();
-              img.onload = () => {
-                setFmtPreview(dataUrl);
-                setFmtMeta({ w: img.naturalWidth, h: img.naturalHeight, size: file.size, name: file.name });
-              };
-              img.src = dataUrl;
-            };
-            reader.readAsDataURL(file);
-          };
-
-          const handleFmtConvert = async () => {
-            if (!fmtFile) { setFmtStatus("⚠ Upload an image first."); return; }
-            setFmtBusy(true);
-            setFmtStatus("⏳ Drawing to canvas…");
-            try {
-              const img    = await loadImageFromFile(fmtFile);
-              const canvas = document.createElement("canvas");
-              canvas.width  = img.naturalWidth;
-              canvas.height = img.naturalHeight;
-              const ctx = canvas.getContext("2d");
-              /* Fill white background so transparent PNGs convert cleanly to JPEG */
-              ctx.fillStyle = "#ffffff";
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(img, 0, 0);
-              /* toDataURL with JPEG mime + quality 0.92 */
-              const dataUrl  = canvas.toDataURL("image/jpeg", 0.92);
-              const baseName = fmtFile.name.replace(/\.[^.]+$/, "") || "converted";
-              triggerDownload(dataUrl, `${baseName}.jpg`);
-              /* Compute approx output size from base64 payload */
-              const b64Bytes = Math.round((dataUrl.length - "data:image/jpeg;base64,".length) * 0.75);
-              setFmtStatus(`✓ Exported as JPEG — ${(b64Bytes / 1024).toFixed(1)} KB  (${img.naturalWidth} × ${img.naturalHeight}px)`);
-            } catch (err) {
-              setFmtStatus(`⚠ Conversion failed: ${err.message}`);
-            } finally {
-              setFmtBusy(false);
-            }
-          };
-
-          /* ══════════════════════════════════════════════════════
-             CARD 2 — COMPRESSION ENGINE
-             State
-             ══════════════════════════════════════════════════════ */
-          const [cmpFile,    setCmpFile]    = React.useState(null);
-          const [cmpPreview, setCmpPreview] = React.useState(null);
-          const [cmpMeta,    setCmpMeta]    = React.useState(null);
-          const [cmpResult,  setCmpResult]  = React.useState(null);  // { dataUrl, w, h, bytes }
-          const [cmpStatus,  setCmpStatus]  = React.useState("");
-          const [cmpBusy,    setCmpBusy]    = React.useState(false);
-          const cmpRef = React.useRef(null);
-
-          const handleCmpPick = (file) => {
-            if (!file || !file.type.startsWith("image/")) {
-              setCmpStatus("⚠ Please select a valid image file.");
-              return;
-            }
-            setCmpStatus(""); setCmpResult(null);
-            setCmpFile(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const dataUrl = e.target.result;
-              const img = new Image();
-              img.onload = () => {
-                setCmpPreview(dataUrl);
-                setCmpMeta({ w: img.naturalWidth, h: img.naturalHeight, size: file.size, name: file.name });
-              };
-              img.src = dataUrl;
-            };
-            reader.readAsDataURL(file);
-          };
-
-          const handleCmpCompress = async () => {
-            if (!cmpFile) { setCmpStatus("⚠ Upload an image first."); return; }
-            setCmpBusy(true);
-            setCmpStatus("⏳ Compressing on canvas…");
-            try {
-              const img    = await loadImageFromFile(cmpFile);
-              const canvas = document.createElement("canvas");
-              /* Scale dimensions down by 30% */
-              const SCALE   = 0.70;
-              const newW    = Math.max(1, Math.round(img.naturalWidth  * SCALE));
-              const newH    = Math.max(1, Math.round(img.naturalHeight * SCALE));
-              canvas.width  = newW;
-              canvas.height = newH;
-              const ctx = canvas.getContext("2d");
-              ctx.imageSmoothingEnabled  = true;
-              ctx.imageSmoothingQuality  = "high";
-              ctx.fillStyle = "#ffffff";
-              ctx.fillRect(0, 0, newW, newH);
-              ctx.drawImage(img, 0, 0, newW, newH);
-              /* Quality 0.5 for aggressive byte reduction */
-              const dataUrl  = canvas.toDataURL("image/jpeg", 0.5);
-              const b64Bytes = Math.round((dataUrl.length - "data:image/jpeg;base64,".length) * 0.75);
-              setCmpResult({ dataUrl, w: newW, h: newH, bytes: b64Bytes });
-              const saving = (((cmpFile.size - b64Bytes) / cmpFile.size) * 100).toFixed(1);
-              const savingNum = parseFloat(saving);
-              setCmpStatus(
-                savingNum > 0
-                  ? `✓ Compressed ${newW}×${newH}px — ${(b64Bytes / 1024).toFixed(1)} KB saved ${savingNum}% vs original`
-                  : `✓ Compressed ${newW}×${newH}px — ${(b64Bytes / 1024).toFixed(1)} KB (original was already small)`
-              );
-            } catch (err) {
-              setCmpStatus(`⚠ Compression failed: ${err.message}`);
-            } finally {
-              setCmpBusy(false);
-            }
-          };
-
-          const handleCmpDownload = () => {
-            if (!cmpResult) return;
-            const baseName = (cmpFile && cmpFile.name.replace(/\.[^.]+$/, "")) || "compressed";
-            triggerDownload(cmpResult.dataUrl, `${baseName}_compressed.jpg`);
-          };
-
-          /* ══════════════════════════════════════════════════════
-             CARD 3 — IMAGE TO PDF (printable viewport frame)
-             State
-             ══════════════════════════════════════════════════════ */
-          const [pdfFile,    setPdfFile]    = React.useState(null);
-          const [pdfPreview, setPdfPreview] = React.useState(null);
-          const [pdfMeta,    setPdfMeta]    = React.useState(null);
-          const [pdfStatus,  setPdfStatus]  = React.useState("");
-          const [pdfBusy,    setPdfBusy]    = React.useState(false);
-          const pdfRef = React.useRef(null);
-
-          const handlePdfPick = (file) => {
-            if (!file || !file.type.startsWith("image/")) {
-              setPdfStatus("⚠ Please select a valid image file.");
-              return;
-            }
-            setPdfStatus("");
-            setPdfFile(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const dataUrl = e.target.result;
-              const img = new Image();
-              img.onload = () => {
-                setPdfPreview(dataUrl);
-                setPdfMeta({ w: img.naturalWidth, h: img.naturalHeight, size: file.size, name: file.name });
-              };
-              img.src = dataUrl;
-            };
-            reader.readAsDataURL(file);
-          };
-
-          const handlePdfOpen = () => {
-            if (!pdfFile) { setPdfStatus("⚠ Upload an image first."); return; }
-            if (!pdfPreview) { setPdfStatus("⚠ Image is still loading — please wait a moment."); return; }
-            setPdfBusy(true);
-            setPdfStatus("⏳ Preparing printable frame…");
-            try {
-              const baseName = pdfFile.name.replace(/\.[^.]+$/, "") || "image";
-              /* Build a self-contained HTML document that:
-                 1. Embeds the image as a base64 data-URL array string
-                 2. Centers it on an A4-proportioned white page
-                 3. Auto-triggers the print dialog on load
-                 4. Closes the tab after the dialog is dismissed        */
-              const htmlDoc = [
-                "<!DOCTYPE html>",
-                "<html lang='en'>",
-                "<head>",
-                "  <meta charset='UTF-8'>",
-                `  <title>${baseName} — Print / Save as PDF</title>`,
-                "  <style>",
-                "    * { margin: 0; padding: 0; box-sizing: border-box; }",
-                "    html, body { width: 100%; background: #e5e7eb; }",
-                "    .page {",
-                "      width: 210mm; min-height: 297mm;",
-                "      background: #fff;",
-                "      margin: 0 auto;",
-                "      display: flex; align-items: center; justify-content: center;",
-                "      padding: 16mm;",
-                "    }",
-                "    img {",
-                "      max-width: 100%; max-height: 265mm;",
-                "      object-fit: contain;",
-                "      display: block;",
-                "    }",
-                "    .toolbar {",
-                "      position: fixed; top: 0; left: 0; right: 0; z-index: 999;",
-                "      background: #1e293b; color: #f1f5f9;",
-                "      padding: 10px 20px; display: flex; align-items: center;",
-                "      gap: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px;",
-                "    }",
-                "    .toolbar button {",
-                "      padding: 6px 16px; border-radius: 7px; border: none;",
-                "      background: #6366f1; color: #fff; font-size: 12px;",
-                "      font-weight: 700; cursor: pointer;",
-                "    }",
-                "    .toolbar button.close {",
-                "      background: #475569; margin-left: auto;",
-                "    }",
-                "    @media print {",
-                "      .toolbar { display: none !important; }",
-                "      html, body { background: #fff; }",
-                "      .page { margin: 0; padding: 12mm; width: 100%; min-height: unset; }",
-                "    }",
-                "  </style>",
-                "</head>",
-                "<body>",
-                "  <div class='toolbar'>",
-                `    <span>📄 ${baseName}.pdf&nbsp;—&nbsp;Print or Save as PDF</span>`,
-                "    <button onclick='window.print()'>🖨 Print / Save PDF</button>",
-                "    <button class='close' onclick='window.close()'>✕ Close</button>",
-                "  </div>",
-                "  <div style='height:44px'></div>",
-                "  <div class='page'>",
-                /* Embed image as data-URL — the array join reconstructs the string */
-                `    <img src="${pdfPreview}" alt="${baseName}" />`,
-                "  </div>",
-                "  <script>",
-                "    window.addEventListener('load', () => {",
-                "      setTimeout(() => window.print(), 600);",
-                "    });",
-                "  </script>",
-                "</body>",
-                "</html>",
-              ].join("\n");
-
-              /* Convert the HTML string to a Blob and open in a new tab */
-              const blob = new Blob([htmlDoc], { type: "text/html;charset=utf-8" });
-              const url  = URL.createObjectURL(blob);
-              const win  = window.open(url, "_blank");
-              /* Revoke after the new tab has had time to load */
-              if (win) {
-                win.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
-                setTimeout(() => URL.revokeObjectURL(url), 30000);
-              } else {
-                URL.revokeObjectURL(url);
-                setPdfStatus("⚠ Pop-up blocked — please allow pop-ups for this site and try again.");
-                setPdfBusy(false);
-                return;
-              }
-              setPdfStatus(`✓ Printable frame opened — use the toolbar or Ctrl+P to Save as PDF`);
-            } catch (err) {
-              setPdfStatus(`⚠ Failed to open frame: ${err.message}`);
-            } finally {
-              setPdfBusy(false);
-            }
-          };
-
-          /* ── Shared drop-zone tile ── */
-          const DropTile = ({ fileRef, onPick, preview, meta, color, accept }) => {
-            const handleDrop = (e) => {
-              e.preventDefault();
-              const f = e.dataTransfer.files && e.dataTransfer.files[0];
-              if (f) onPick(f);
-            };
-            return (
-              <div>
-                <div
-                  onDragOver={e => e.preventDefault()}
-                  onDrop={handleDrop}
-                  onClick={() => fileRef.current && fileRef.current.click()}
-                  style={{
-                    border: `2px dashed ${preview ? color : bd}`,
-                    borderRadius: 10,
-                    background: preview ? color + "08" : "transparent",
-                    cursor: "pointer",
-                    transition: "border-color 0.2s, background 0.2s",
-                    overflow: "hidden",
-                    WebkitTapHighlightColor: "transparent",
-                    touchAction: "manipulation",
-                  }}
-                >
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept={accept || "image/*"}
-                    style={{ display: "none" }}
-                    onChange={e => { const f = e.target.files && e.target.files[0]; if (f) onPick(f); e.target.value = ""; }}
-                  />
-                  {preview ? (
-                    /* Image preview thumbnail */
-                    <div style={{ position: "relative" }}>
-                      <img
-                        src={preview}
-                        alt="preview"
-                        style={{ width: "100%", maxHeight: 180, objectFit: "contain", display: "block", background: dk ? "#0f172a" : "#f1f5f9", padding: 8 }}
-                      />
-                      <div style={{
-                        position: "absolute", bottom: 0, left: 0, right: 0,
-                        background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)",
-                        padding: "5px 10px", display: "flex", gap: 10,
-                        fontSize: 10, color: "#fff", fontWeight: 600,
-                      }}>
-                        <span>{meta && meta.name}</span>
-                        <span style={{ marginLeft: "auto" }}>{meta && `${meta.w}×${meta.h}px`}</span>
-                        <span>{meta && `${(meta.size / 1024).toFixed(1)} KB`}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Empty state */
-                    <div style={{ padding: "22px 12px", textAlign: "center" }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 8, opacity: 0.7 }}>
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                      <div style={{ fontSize: "clamp(10.5px, 3vw, 12px)", color: mu, fontWeight: 600, lineHeight: 1.5 }}>
-                        Tap to choose an image<br/>
-                        <span style={{ fontSize: 10, opacity: 0.7 }}>or drag &amp; drop · PNG, JPEG, WebP, GIF</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {preview && (
-                  <div style={{ marginTop: 6, display: "flex", justifyContent: "flex-end" }}>
-                    <button
-                      onClick={e => { e.stopPropagation(); onPick.__clear && onPick.__clear(); fileRef.current && fileRef.current.click(); }}
-                      onClick={() => fileRef.current && fileRef.current.click()}
-                      style={{ fontSize: 10, color, background: "transparent", border: `1px solid ${color}40`, borderRadius: 6, padding: "3px 10px", cursor: "pointer", fontWeight: 600 }}
-                    >↺ Change image</button>
-                  </div>
-                )}
-              </div>
-            );
-          };
-
-          /* ── Stat pill row ── */
-          const StatRow = ({ items, color }) => (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {items.map(({ label, value }) => (
-                <div key={label} style={{
-                  fontSize: 10, padding: "3px 8px", borderRadius: 6,
-                  background: color + "12", border: `1px solid ${color}25`,
-                  color: mu, fontWeight: 600,
-                }}>
-                  <span style={{ color }}>{label}</span> {value}
-                </div>
-              ))}
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: text }}>Compression Node</div>
+              <div style={{ fontSize: 10.5, color: "#06b6d4", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Whitespace &amp; Data Packing</div>
             </div>
-          );
+          </div>
 
-          /* ══════════════════════════════════════════════════════════════
-             RENDER — three cards in responsive single-column grid
-             ══════════════════════════════════════════════════════════════ */
-          return (
+          {/* Drop zone */}
+          <div
+            style={dropZoneStyle(cpFileLabel !== "Drop or choose a file", "#06b6d4")}
+            onDragOver={e => e.preventDefault()}
+            onDrop={handleCpDrop}
+            onClick={() => cpUploadRef.current && cpUploadRef.current.click()}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 5 }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div style={{ fontSize: 11.5, color: cpFileLabel !== "Drop or choose a file" ? "#06b6d4" : muted, fontWeight: 600 }}>{cpFileLabel}</div>
+          </div>
+
+          {/* Input */}
+          <div>
+            <label style={labelStyle}>Source Text / Code</label>
+            <textarea
+              rows={5}
+              style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "monospace", fontSize: 12 }}
+              placeholder="Paste code or text to compress…"
+              value={cpInput}
+              onChange={e => { setCpInput(e.target.value); setCpOutput(""); setCpSavings(null); }}
+            />
+          </div>
+
+          {/* Mode selector */}
+          <div>
+            <label style={labelStyle}>Compression Mode</label>
+            {formatTabRow(
+              [{ value: "whitespace", label: "Trim" }, { value: "minify", label: "Minify" }, { value: "collapse", label: "Collapse" }],
+              cpMode, setCpMode, "#06b6d4"
+            )}
+          </div>
+
+          {/* Output filename */}
+          <div>
+            <label style={labelStyle}>Output Filename</label>
+            <input style={inputStyle} value={cpFileName} onChange={e => setCpFileName(e.target.value)} placeholder="compressed" />
+          </div>
+
+          {/* Savings badge */}
+          {cpSavings && (
             <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: 18,
-              width: "100%",
-              maxWidth: "100%",
-              boxSizing: "border-box",
+              display: "flex", gap: 8, fontSize: 11.5,
+              background: dark ? "#0f172a" : "#f0fdf4",
+              border: "1px solid #10b98130", borderRadius: 9, padding: "8px 12px",
             }}>
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 1 — IMAGE FORMAT SWAP
-                  Canvas draws the image at native size → toDataURL("image/jpeg")
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#f59e0b")}>
-                  <div style={iconBubble("#f59e0b")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="16 3 21 3 21 8"/>
-                      <line x1="4" y1="20" x2="21" y2="3"/>
-                      <polyline points="21 16 21 21 16 21"/>
-                      <line x1="15" y1="15" x2="21" y2="21"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Image Format Swap</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#f59e0b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Any format → JPEG · canvas engine</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#f59e0b22", color: "#f59e0b", letterSpacing: "0.07em", flexShrink: 0 }}>CONVERT</span>
-                </div>
-
-                {/* How it works strip */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#fffbeb", border: "1px solid #f59e0b20" }}>
-                  Upload any image (PNG, WebP, GIF, BMP…). The browser draws it onto a hidden <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#fef3c7", borderRadius: 4, padding: "1px 5px", color: "#d97706" }}>&lt;canvas&gt;</code> at full resolution, then calls <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#fef3c7", borderRadius: 4, padding: "1px 5px", color: "#d97706" }}>toDataURL("image/jpeg")</code> — no server, no upload.
-                </div>
-
-                <DropTile
-                  fileRef={fmtRef}
-                  onPick={handleFmtPick}
-                  preview={fmtPreview}
-                  meta={fmtMeta}
-                  color="#f59e0b"
-                />
-
-                {fmtMeta && (
-                  <StatRow color="#f59e0b" items={[
-                    { label: "Source:", value: fmtMeta.name },
-                    { label: "Dimensions:", value: `${fmtMeta.w} × ${fmtMeta.h} px` },
-                    { label: "Original size:", value: `${(fmtMeta.size / 1024).toFixed(1)} KB` },
-                    { label: "Output:", value: "JPEG — quality 0.92" },
-                  ]} />
-                )}
-
-                {sLine(fmtStatus)}
-
-                {processBtn(
-                  fmtBusy ? "Converting…" : "Convert to JPEG & Download",
-                  handleFmtConvert,
-                  "linear-gradient(135deg, #f59e0b, #d97706)",
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="16 3 21 3 21 8"/>
-                    <line x1="4" y1="20" x2="21" y2="3"/>
-                    <polyline points="21 16 21 21 16 21"/>
-                    <line x1="15" y1="15" x2="21" y2="21"/>
-                  </svg>,
-                  fmtBusy || !fmtFile
-                )}
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  100% browser-native · canvas API · no upload · white-fill for transparent sources
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 2 — COMPRESSION ENGINE
-                  Canvas redraws at 70% dimensions + quality 0.5 → JPEG download
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#ef4444")}>
-                  <div style={iconBubble("#ef4444")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="4 14 10 14 10 20"/>
-                      <polyline points="20 10 14 10 14 4"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                      <line x1="3" y1="21" x2="14" y2="10"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Compression Engine</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#ef4444", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>70% scale · quality 0.5 · JPEG output</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#ef444422", color: "#ef4444", letterSpacing: "0.07em", flexShrink: 0 }}>COMPRESS</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#fef2f2", border: "1px solid #ef444420" }}>
-                  The canvas is sized to <strong style={{ color: "#ef4444" }}>70%</strong> of the original dimensions, then drawn with <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#fee2e2", borderRadius: 4, padding: "1px 5px", color: "#dc2626" }}>imageSmoothingQuality: "high"</code> and exported at quality <strong style={{ color: "#ef4444" }}>0.5</strong> — a dual reduction of both pixel count and JPEG encoding fidelity.
-                </div>
-
-                <DropTile
-                  fileRef={cmpRef}
-                  onPick={handleCmpPick}
-                  preview={cmpPreview}
-                  meta={cmpMeta}
-                  color="#ef4444"
-                />
-
-                {cmpMeta && (
-                  <StatRow color="#ef4444" items={[
-                    { label: "Source:", value: cmpMeta.name },
-                    { label: "Original:", value: `${cmpMeta.w}×${cmpMeta.h}px — ${(cmpMeta.size / 1024).toFixed(1)} KB` },
-                    { label: "Target:", value: `${Math.round(cmpMeta.w * 0.7)}×${Math.round(cmpMeta.h * 0.7)}px — quality 0.5` },
-                  ]} />
-                )}
-
-                {/* Compressed preview + savings badge */}
-                {cmpResult && (
-                  <div style={{ borderRadius: 9, overflow: "hidden", border: `1px solid #ef444430` }}>
-                    <img
-                      src={cmpResult.dataUrl}
-                      alt="compressed preview"
-                      style={{ width: "100%", maxHeight: 160, objectFit: "contain", display: "block", background: dk ? "#0f172a" : "#f9fafb", padding: 8 }}
-                    />
-                    <div style={{
-                      padding: "7px 12px", display: "flex", flexWrap: "wrap", gap: 8,
-                      background: dk ? "#0f172a" : "#fef2f2",
-                      borderTop: `1px solid #ef444420`,
-                      fontSize: "clamp(10px, 2.5vw, 11px)", fontWeight: 600,
-                    }}>
-                      <span style={{ color: mu }}>Output: <strong style={{ color: "#ef4444" }}>{cmpResult.w}×{cmpResult.h}px</strong></span>
-                      <span style={{ color: mu }}>Size: <strong style={{ color: "#ef4444" }}>{(cmpResult.bytes / 1024).toFixed(1)} KB</strong></span>
-                      {cmpMeta && cmpResult.bytes < cmpMeta.size && (
-                        <span style={{ marginLeft: "auto", color: "#10b981", fontWeight: 800 }}>
-                          ↓ {(((cmpMeta.size - cmpResult.bytes) / cmpMeta.size) * 100).toFixed(1)}% saved
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {sLine(cmpStatus)}
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {processBtn(
-                    cmpBusy ? "Compressing…" : "Compress Image",
-                    handleCmpCompress,
-                    "linear-gradient(135deg, #ef4444, #dc2626)",
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="4 14 10 14 10 20"/>
-                      <polyline points="20 10 14 10 14 4"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                      <line x1="3" y1="21" x2="14" y2="10"/>
-                    </svg>,
-                    cmpBusy || !cmpFile
-                  )}
-                  {cmpResult && processBtn(
-                    "Download Compressed JPEG",
-                    handleCmpDownload,
-                    "#b91c1c",
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>,
-                    false
-                  )}
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  Dual reduction: 30% dimension scale + quality 0.5 encoding · no server · instant
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 3 — IMAGE TO PDF
-                  Reads image as base64 data-URL array string →
-                  injects into printable HTML Blob → opens in new tab
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#8b5cf6")}>
-                  <div style={iconBubble("#8b5cf6")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                      <rect x="8" y="12" width="8" height="6" rx="1"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Image to PDF</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#8b5cf6", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Base64 array → printable viewport frame</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#8b5cf622", color: "#8b5cf6", letterSpacing: "0.07em", flexShrink: 0 }}>PDF</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#f5f3ff", border: "1px solid #8b5cf620" }}>
-                  The image is read by <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#ede9fe", borderRadius: 4, padding: "1px 5px", color: "#7c3aed" }}>FileReader</code> as a base64 data-URL array string, injected into a self-contained A4 HTML document, and opened in a new tab. The toolbar's <strong style={{ color: "#8b5cf6" }}>Print / Save PDF</strong> button triggers the native browser print dialog — zero dependencies.
-                </div>
-
-                <DropTile
-                  fileRef={pdfRef}
-                  onPick={handlePdfPick}
-                  preview={pdfPreview}
-                  meta={pdfMeta}
-                  color="#8b5cf6"
-                />
-
-                {pdfMeta && (
-                  <StatRow color="#8b5cf6" items={[
-                    { label: "File:", value: pdfMeta.name },
-                    { label: "Dimensions:", value: `${pdfMeta.w} × ${pdfMeta.h} px` },
-                    { label: "Size:", value: `${(pdfMeta.size / 1024).toFixed(1)} KB` },
-                    { label: "Page:", value: "A4 · 210mm × 297mm" },
-                  ]} />
-                )}
-
-                {/* Data-URL string preview */}
-                {pdfPreview && (
-                  <div>
-                    <label style={{ ...lS, marginBottom: 6 }}>Base64 Data-URL Preview (array string)</label>
-                    <div style={{
-                      borderRadius: 8, border: `1px solid #8b5cf630`,
-                      background: dk ? "#0f172a" : "#faf5ff",
-                      padding: "9px 12px",
-                      fontFamily: "monospace",
-                      fontSize: "clamp(9px, 2vw, 10.5px)",
-                      color: "#8b5cf6",
-                      wordBreak: "break-all",
-                      lineHeight: 1.5,
-                      maxHeight: 72,
-                      overflowY: "auto",
-                    }}>
-                      {/* Show first 320 chars of the data-URL to illustrate the array string */}
-                      {pdfPreview.slice(0, 320)}<span style={{ color: mu }}>…[{(pdfPreview.length).toLocaleString()} chars total]</span>
-                    </div>
-                  </div>
-                )}
-
-                {sLine(pdfStatus)}
-
-                {processBtn(
-                  pdfBusy ? "Opening frame…" : "Open Printable PDF Frame",
-                  handlePdfOpen,
-                  "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <rect x="8" y="12" width="8" height="6" rx="1"/>
-                  </svg>,
-                  pdfBusy || !pdfFile
-                )}
-
-                {/* Print workflow note */}
-                <div style={{
-                  borderRadius: 8, border: `1px solid #8b5cf625`,
-                  background: dk ? "#0f172a" : "#faf5ff",
-                  padding: "9px 12px", fontSize: "clamp(10px, 2.5vw, 11px)", color: mu, lineHeight: 1.55,
-                }}>
-                  <strong style={{ color: "#8b5cf6" }}>In the opened frame:</strong> click <em>Print / Save PDF</em> in the toolbar, or press <kbd style={{ fontSize: 9.5, padding: "1px 5px", borderRadius: 4, border: `1px solid ${bd}`, background: dk ? "#334155" : "#e2e8f0" }}>Ctrl+P</kbd> / <kbd style={{ fontSize: 9.5, padding: "1px 5px", borderRadius: 4, border: `1px solid ${bd}`, background: dk ? "#334155" : "#e2e8f0" }}>⌘P</kbd>, then choose <em>Save as PDF</em> as the destination.
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  FileReader base64 → Blob HTML → new tab · browser print dialog · zero dependencies
-                </div>
-              </div>
-
+              <span style={{ color: muted }}>Before: <strong style={{ color: text }}>{cpSavings.before.toLocaleString()}B</strong></span>
+              <span style={{ color: muted }}>After: <strong style={{ color: "#10b981" }}>{cpSavings.after.toLocaleString()}B</strong></span>
+              <span style={{ marginLeft: "auto", fontWeight: 800, color: "#10b981" }}>↓{cpSavings.pct}% saved</span>
             </div>
-          ); /* end ImagesModule return */
-        } /* end function ImagesModule */
+          )}
 
-        /* Render inner component with all required style helpers forwarded */
-        return (
-          <ImagesModule
-            dark={dark} surface={surface} border={border} text={text} muted={muted}
-            inputStyle={inputStyle} labelStyle={labelStyle}
-            panelStyle={panelStyle} panelHeaderStyle={panelHeaderStyle}
-            iconBubble={iconBubble} dropZoneStyle={dropZoneStyle}
-          />
-        );
-      })()}{/* end utilCategory === "images" IIFE */}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          CATEGORY: DEVELOPER TOOLS — placeholder, ready for dev tools next phase
-          ══════════════════════════════════════════════════════════════════ */}
-      {utilCategory === "developer" && (() => {
-
-        /* ══════════════════════════════════════════════════════════════════
-           DeveloperModule — inner component so useState hooks are legal.
-           Three cards:
-             1. Code Minifier    — regex string compaction
-             2. Base64 Pipeline  — btoa() / atob()
-             3. URL Translator   — encodeURIComponent / decodeURIComponent
-           All processing is synchronous, 100% browser-native, zero deps.
-           ══════════════════════════════════════════════════════════════════ */
-        function DeveloperModule({ dark: dk, surface: sf, border: bd, text: tx,
-                                   muted: mu, inputStyle: iS, labelStyle: lS,
-                                   panelStyle, panelHeaderStyle, iconBubble }) {
-
-          /* ── Shared status line renderer ─────────────────────────────── */
-          const sLine = (msg) => {
-            if (!msg) return null;
-            const isOk   = msg.startsWith("✓");
-            const isWarn = msg.startsWith("⚠");
-            return (
-              <div style={{
-                fontSize: "clamp(10.5px, 2.5vw, 11.5px)", padding: "8px 12px",
-                borderRadius: 8, fontFamily: "monospace", wordBreak: "break-word", lineHeight: 1.5,
-                background: dk ? "#0f172a" : "#f8fafc",
-                border: `1px solid ${isOk ? "#10b98140" : isWarn ? "#f59e0b40" : bd}`,
-                color:  isOk ? "#10b981" : isWarn ? "#f59e0b" : mu,
-              }}>{msg}</div>
-            );
-          };
-
-          /* ── Shared copy-to-clipboard button ─────────────────────────── */
-          const CopyBtn = ({ value, color }) => {
-            const [copied, setCopied] = React.useState(false);
-            const handleCopy = () => {
-              if (!value) return;
-              navigator.clipboard.writeText(value).then(() => {
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              }).catch(() => {
-                /* Fallback for environments without clipboard API */
-                const ta = document.createElement("textarea");
-                ta.value = value;
-                ta.style.position = "fixed";
-                ta.style.opacity  = "0";
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand("copy");
-                document.body.removeChild(ta);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              });
-            };
-            return (
-              <button
-                onClick={handleCopy}
-                disabled={!value}
-                style={{
-                  display: "flex", alignItems: "center", gap: 5,
-                  padding: "5px 12px", borderRadius: 7, border: `1px solid ${copied ? "#10b98150" : color + "40"}`,
-                  background: copied ? "#10b98112" : "transparent",
-                  color: copied ? "#10b981" : color,
-                  fontSize: 10.5, fontWeight: 700, cursor: value ? "pointer" : "not-allowed",
-                  opacity: value ? 1 : 0.4,
-                  transition: "all 0.15s",
-                  WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                }}
-              >
-                {copied
-                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                }
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            );
-          };
-
-          /* ── Shared action button ────────────────────────────────────── */
-          const ActBtn = ({ label, onClick, color, icon, disabled, flex }) => (
-            <button
-              onClick={onClick}
-              disabled={!!disabled}
-              style={{
-                flex: flex ? "1 1 0" : undefined,
-                width: flex ? undefined : "100%",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-                padding: "11px 14px", borderRadius: 10, border: "none",
-                background: disabled ? (dk ? "#1e293b" : "#e2e8f0") : color,
-                color: disabled ? mu : "#fff",
-                fontSize: "clamp(11.5px, 2.5vw, 13px)", fontWeight: 700,
-                cursor: disabled ? "not-allowed" : "pointer",
-                transition: "filter 0.15s, transform 0.1s",
-                WebkitTapHighlightColor: "transparent",
-                touchAction: "manipulation", userSelect: "none",
-                opacity: disabled ? 0.5 : 1,
-              }}
-              onMouseEnter={e => { if (!disabled) e.currentTarget.style.filter = "brightness(1.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.filter = ""; e.currentTarget.style.transform = ""; }}
-              onMouseDown={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-              onTouchStart={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-            >
-              {icon}{label}
-            </button>
-          );
-
-          /* ── Shared output block (readonly textarea + copy bar) ──────── */
-          const OutputBlock = ({ value, color, label, mono }) => (
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <label style={{ ...lS, marginBottom: 0 }}>{label}</label>
-                <CopyBtn value={value} color={color} />
-              </div>
+          {/* Output preview */}
+          {cpOutput && (
+            <div>
+              <label style={labelStyle}>Compressed Output</label>
               <textarea
-                rows={5}
+                rows={4}
                 readOnly
-                value={value}
-                style={{
-                  ...iS,
-                  resize: "vertical",
-                  width: "100%", boxSizing: "border-box",
-                  fontFamily: mono !== false ? "monospace" : "inherit",
-                  fontSize: 12, lineHeight: 1.65,
-                  color: value ? color : mu,
-                  borderColor: value ? color + "50" : undefined,
-                  background: value ? (dk ? "#0f172a" : color + "06") : undefined,
-                  cursor: "text",
-                }}
-                placeholder="Output will appear here…"
+                style={{ ...inputStyle, resize: "vertical", lineHeight: 1.5, fontFamily: "monospace", fontSize: 11, color: "#06b6d4" }}
+                value={cpOutput}
               />
-              {value && (
-                <div style={{ fontSize: 10, color: mu, display: "flex", gap: 10 }}>
-                  <span><strong style={{ color }}>{value.length.toLocaleString()}</strong> chars</span>
-                  <span><strong style={{ color }}>{new Blob([value]).size.toLocaleString()}</strong> bytes</span>
-                </div>
+            </div>
+          )}
+
+          {/* Status */}
+          {statusLine(cpStatus)}
+
+          {/* Buttons */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {actionBtn(
+              "Compress",
+              handleCompress,
+              "linear-gradient(135deg, #06b6d4, #0ea5e9)",
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/></svg>
+            )}
+            {cpOutput && actionBtn(
+              "Download Compressed",
+              handleCpDownload,
+              "#0891b2",
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            )}
+          </div>
+        </div>
+
+        {/* ─────────────────────────────────────────────────────────────────
+            PANEL 3 — DOCUMENT MERGER CORE
+            ───────────────────────────────────────────────────────────────── */}
+        <div style={panelStyle}>
+          <div style={panelHeaderStyle("#10b981")}>
+            <div style={iconBubble("#10b981")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: text }}>Document Merger Core</div>
+              <div style={{ fontSize: 10.5, color: "#10b981", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Unified File Output</div>
+            </div>
+          </div>
+
+          {/* Block A drop zone */}
+          <div>
+            <label style={labelStyle}>Block A</label>
+            <div
+              style={{ ...dropZoneStyle(mgFileALabel !== "Drop or choose File A", "#10b981"), marginBottom: 6 }}
+              onDragOver={e => e.preventDefault()}
+              onDrop={handleMgDropA}
+              onClick={() => mgUploadARef.current && mgUploadARef.current.click()}
+            >
+              <div style={{ fontSize: 11.5, color: mgFileALabel !== "Drop or choose File A" ? "#10b981" : muted, fontWeight: 600 }}>{mgFileALabel}</div>
+            </div>
+            <textarea
+              rows={4}
+              style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "monospace", fontSize: 12 }}
+              placeholder="Paste content for Block A…"
+              value={mgBlockA}
+              onChange={e => setMgBlockA(e.target.value)}
+            />
+          </div>
+
+          {/* Block B drop zone */}
+          <div>
+            <label style={labelStyle}>Block B</label>
+            <div
+              style={{ ...dropZoneStyle(mgFileBLabel !== "Drop or choose File B", "#10b981"), marginBottom: 6 }}
+              onDragOver={e => e.preventDefault()}
+              onDrop={handleMgDropB}
+              onClick={() => mgUploadBRef.current && mgUploadBRef.current.click()}
+            >
+              <div style={{ fontSize: 11.5, color: mgFileBLabel !== "Drop or choose File B" ? "#10b981" : muted, fontWeight: 600 }}>{mgFileBLabel}</div>
+            </div>
+            <textarea
+              rows={4}
+              style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, fontFamily: "monospace", fontSize: 12 }}
+              placeholder="Paste content for Block B…"
+              value={mgBlockB}
+              onChange={e => setMgBlockB(e.target.value)}
+            />
+          </div>
+
+          {/* Separator */}
+          <div>
+            <label style={labelStyle}>Join Separator</label>
+            {formatTabRow(
+              [{ value: "divider", label: "──" }, { value: "newline", label: "↵↵" }, { value: "none", label: "None" }, { value: "comment", label: "/* */" }],
+              mgSeparator, setMgSeparator, "#10b981"
+            )}
+          </div>
+
+          {/* Output controls */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div>
+              <label style={labelStyle}>Filename</label>
+              <input style={inputStyle} value={mgFileName} onChange={e => setMgFileName(e.target.value)} placeholder="merged-output" />
+            </div>
+            <div>
+              <label style={labelStyle}>Format</label>
+              {formatTabRow(
+                [{ value: "txt", label: "TXT" }, { value: "json", label: "JSON" }, { value: "html", label: "HTML" }],
+                mgFormat, setMgFormat, "#10b981"
               )}
             </div>
-          );
-
-          /* ══════════════════════════════════════════════════════════════
-             CARD 1 — CODE MINIFIER
-             Runs string compaction regex formulas on click.
-             Strategies:
-               · Trim      — .replace(/\s+/g, ' ').trim()
-               · Minify    — also strips /* */ and // comments + semicolons
-               · Collapse  — removes ALL whitespace (single token stream)
-             ══════════════════════════════════════════════════════════════ */
-          const [minInput,    setMinInput]    = React.useState("");
-          const [minOutput,   setMinOutput]   = React.useState("");
-          const [minMode,     setMinMode]     = React.useState("trim");
-          const [minStatus,   setMinStatus]   = React.useState("");
-          const [minSavings,  setMinSavings]  = React.useState(null);
-
-          const MINIFY_MODES = [
-            { value: "trim",     label: "Trim",    desc: "Collapse runs of whitespace to single spaces" },
-            { value: "minify",   label: "Minify",  desc: "Strip comments + excess whitespace" },
-            { value: "collapse", label: "Collapse",desc: "Remove ALL whitespace — single token stream" },
-          ];
-
-          const handleMinify = () => {
-            if (!minInput.trim()) { setMinStatus("⚠ Paste some code or text first."); return; }
-            let result = minInput;
-
-            if (minMode === "trim") {
-              /* Core formula from spec */
-              result = minInput.replace(/\s+/g, " ").trim();
-            } else if (minMode === "minify") {
-              /* Strip block comments */
-              result = result.replace(/\/\*[\s\S]*?\*\//g, "");
-              /* Strip line comments */
-              result = result.replace(/\/\/[^\n]*/g, "");
-              /* Collapse whitespace */
-              result = result.replace(/\s+/g, " ").trim();
-              /* Remove spaces around common operators */
-              result = result
-                .replace(/\s*([{}();,=+\-*/<>!&|?:])\s*/g, "$1")
-                .replace(/;\s*}/g, "}");
-            } else if (minMode === "collapse") {
-              /* Remove ALL whitespace — newlines, tabs, spaces */
-              result = result.replace(/\s+/g, "");
-            }
-
-            const savedChars = minInput.length - result.length;
-            const savedPct   = minInput.length > 0
-              ? ((savedChars / minInput.length) * 100).toFixed(1)
-              : "0.0";
-
-            setMinOutput(result);
-            setMinSavings({ before: minInput.length, after: result.length, chars: savedChars, pct: savedPct });
-            setMinStatus(
-              savedChars > 0
-                ? `✓ Compacted — removed ${savedChars.toLocaleString()} chars (${savedPct}% reduction)`
-                : `✓ Processed — no further reduction possible in ${minMode} mode`
-            );
-          };
-
-          const handleMinClear = () => {
-            setMinInput(""); setMinOutput(""); setMinStatus(""); setMinSavings(null);
-          };
-
-          /* ══════════════════════════════════════════════════════════════
-             CARD 2 — BASE64 PIPELINE
-             btoa() for encode, atob() for decode.
-             UTF-8 safe wrapper: TextEncoder → Uint8Array → binary string
-             so characters outside latin-1 (emoji, CJK, etc.) don't throw.
-             ══════════════════════════════════════════════════════════════ */
-          const [b64Input,   setB64Input]   = React.useState("");
-          const [b64Output,  setB64Output]  = React.useState("");
-          const [b64Status,  setB64Status]  = React.useState("");
-          const [b64LastOp,  setB64LastOp]  = React.useState(null); // "encode"|"decode"
-
-          /* UTF-8 safe btoa */
-          const utf8ToB64 = (str) => {
-            const bytes  = new TextEncoder().encode(str);
-            let   binary = "";
-            bytes.forEach(b => { binary += String.fromCharCode(b); });
-            return btoa(binary);
-          };
-
-          /* UTF-8 safe atob */
-          const b64ToUtf8 = (b64) => {
-            const binary = atob(b64);
-            const bytes  = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-            return new TextDecoder().decode(bytes);
-          };
-
-          const handleB64Encode = () => {
-            if (!b64Input.trim()) { setB64Status("⚠ Enter text to encode."); return; }
-            try {
-              const result = utf8ToB64(b64Input);
-              setB64Output(result);
-              setB64LastOp("encode");
-              setB64Status(`✓ Encoded via btoa() — ${b64Input.length} chars → ${result.length} Base64 chars`);
-            } catch (err) {
-              setB64Status(`⚠ Encoding failed: ${err.message}`);
-            }
-          };
-
-          const handleB64Decode = () => {
-            if (!b64Input.trim()) { setB64Status("⚠ Enter a Base64 string to decode."); return; }
-            try {
-              /* Validate it looks like Base64 before trying */
-              const cleaned = b64Input.replace(/\s/g, "");
-              if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleaned)) {
-                setB64Status("⚠ Input doesn't look like valid Base64 — check for invalid characters.");
-                return;
-              }
-              const result = b64ToUtf8(cleaned);
-              setB64Output(result);
-              setB64LastOp("decode");
-              setB64Status(`✓ Decoded via atob() — ${cleaned.length} Base64 chars → ${result.length} chars`);
-            } catch (err) {
-              setB64Status(`⚠ Decoding failed: ${err.message} — confirm the input is valid Base64.`);
-            }
-          };
-
-          const handleB64Clear = () => {
-            setB64Input(""); setB64Output(""); setB64Status(""); setB64LastOp(null);
-          };
-
-          /* Swap output back into input for chained operations */
-          const handleB64Swap = () => {
-            if (!b64Output) return;
-            setB64Input(b64Output);
-            setB64Output("");
-            setB64Status("");
-            setB64LastOp(null);
-          };
-
-          /* ══════════════════════════════════════════════════════════════
-             CARD 3 — URL TRANSLATOR
-             encodeURIComponent() and decodeURIComponent().
-             Also provides a "Full URL encode" variant using encodeURI()
-             for encoding complete URLs without breaking scheme/slashes.
-             ══════════════════════════════════════════════════════════════ */
-          const [urlInput,   setUrlInput]   = React.useState("");
-          const [urlOutput,  setUrlOutput]  = React.useState("");
-          const [urlStatus,  setUrlStatus]  = React.useState("");
-          const [urlMode,    setUrlMode]    = React.useState("component"); // "component"|"full"
-          const [urlLastOp,  setUrlLastOp]  = React.useState(null);
-
-          const URL_MODES = [
-            { value: "component", label: "Component",  desc: "encodeURIComponent — encodes everything incl. : / ? # & =" },
-            { value: "full",      label: "Full URL",   desc: "encodeURI — preserves : / ? # & = for complete URLs" },
-          ];
-
-          const handleUrlEncode = () => {
-            if (!urlInput.trim()) { setUrlStatus("⚠ Enter text or a URL to encode."); return; }
-            try {
-              const result = urlMode === "component"
-                ? encodeURIComponent(urlInput)
-                : encodeURI(urlInput);
-              setUrlOutput(result);
-              setUrlLastOp("encode");
-              const fn = urlMode === "component" ? "encodeURIComponent()" : "encodeURI()";
-              setUrlStatus(`✓ Encoded via ${fn} — ${urlInput.length} → ${result.length} chars`);
-            } catch (err) {
-              setUrlStatus(`⚠ Encode failed: ${err.message}`);
-            }
-          };
-
-          const handleUrlDecode = () => {
-            if (!urlInput.trim()) { setUrlStatus("⚠ Enter a URL-encoded string to decode."); return; }
-            try {
-              const result = decodeURIComponent(urlInput);
-              setUrlOutput(result);
-              setUrlLastOp("decode");
-              setUrlStatus(`✓ Decoded via decodeURIComponent() — ${urlInput.length} → ${result.length} chars`);
-            } catch (err) {
-              setUrlStatus(`⚠ Decode failed: ${err.message} — check for malformed percent-encoding.`);
-            }
-          };
-
-          const handleUrlClear = () => {
-            setUrlInput(""); setUrlOutput(""); setUrlStatus(""); setUrlLastOp(null);
-          };
-
-          const handleUrlSwap = () => {
-            if (!urlOutput) return;
-            setUrlInput(urlOutput);
-            setUrlOutput("");
-            setUrlStatus("");
-            setUrlLastOp(null);
-          };
-
-          /* ── Mode tab row ────────────────────────────────────────────── */
-          const ModeTabRow = ({ modes, value, onChange, color }) => (
-            <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-              {modes.map(m => {
-                const active = value === m.value;
-                return (
-                  <button
-                    key={m.value}
-                    onClick={() => onChange(m.value)}
-                    title={m.desc}
-                    style={{
-                      flex: "1 1 auto", minWidth: 80,
-                      padding: "9px 10px", borderRadius: 8,
-                      border: `1px solid ${active ? color : bd}`,
-                      background: active ? color : "transparent",
-                      color: active ? "#fff" : mu,
-                      fontSize: "clamp(11px, 2.5vw, 12px)", fontWeight: active ? 700 : 500,
-                      cursor: "pointer", transition: "all 0.15s",
-                      WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                      userSelect: "none",
-                    }}
-                    onMouseDown={e => { if (!active) e.currentTarget.style.transform = "scale(0.97)"; }}
-                    onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-                    onTouchStart={e => { if (!active) e.currentTarget.style.transform = "scale(0.97)"; }}
-                    onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-                  >{m.label}</button>
-                );
-              })}
-            </div>
-          );
-
-          /* ── Swap button ─────────────────────────────────────────────── */
-          const SwapBtn = ({ onClick, disabled, color }) => (
-            <button
-              onClick={onClick}
-              disabled={disabled}
-              title="Move output back to input"
-              style={{
-                alignSelf: "center", display: "flex", alignItems: "center", gap: 5,
-                padding: "6px 14px", borderRadius: 7,
-                border: `1px solid ${disabled ? bd : color + "50"}`,
-                background: "transparent",
-                color: disabled ? mu : color,
-                fontSize: 11, fontWeight: 700,
-                cursor: disabled ? "not-allowed" : "pointer",
-                opacity: disabled ? 0.4 : 1,
-                transition: "all 0.15s",
-                WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-              }}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-                <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-              </svg>
-              ↺ Use as input
-            </button>
-          );
-
-          /* ── RENDER ─────────────────────────────────────────────────── */
-          return (
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: 18,
-              width: "100%",
-              maxWidth: "100%",
-              boxSizing: "border-box",
-            }}>
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 1 — CODE MINIFIER
-                  String compaction via regex replace formulas.
-                  Three modes: Trim · Minify · Collapse
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#06b6d4")}>
-                  <div style={iconBubble("#06b6d4")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="4 14 10 14 10 20"/>
-                      <polyline points="20 10 14 10 14 4"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                      <line x1="3" y1="21" x2="14" y2="10"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Code Minifier</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#06b6d4", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>String compaction · regex replace formulas</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#06b6d422", color: "#06b6d4", letterSpacing: "0.07em", flexShrink: 0 }}>MINIFY</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#ecfeff", border: "1px solid #06b6d420" }}>
-                  Paste any code or text. Select a compaction strategy, then click <strong style={{ color: "#06b6d4" }}>Minify</strong>. All processing runs entirely in the browser via JavaScript string <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#cffafe", borderRadius: 4, padding: "1px 5px", color: "#0891b2" }}>.replace()</code> formulas — no server, no upload.
-                </div>
-
-                {/* Mode selector */}
-                <div>
-                  <label style={lS}>Compaction Mode</label>
-                  <ModeTabRow modes={MINIFY_MODES} value={minMode} onChange={setMinMode} color="#06b6d4" />
-                  <div style={{ marginTop: 6, fontSize: 10.5, color: mu, fontStyle: "italic" }}>
-                    {MINIFY_MODES.find(m => m.value === minMode)?.desc}
-                  </div>
-                </div>
-
-                {/* Formula display */}
-                <div style={{
-                  borderRadius: 8, border: `1px solid #06b6d425`,
-                  background: dk ? "#0f172a" : "#f0fdfe",
-                  padding: "8px 12px",
-                  fontFamily: "monospace",
-                  fontSize: "clamp(9.5px, 2vw, 11px)",
-                  color: "#0891b2",
-                  lineHeight: 1.7,
-                }}>
-                  {minMode === "trim" && (
-                    <span>input<strong style={{ color: "#06b6d4" }}>.replace</strong>(<span style={{ color: "#f59e0b" }}>/\s+/g</span>, <span style={{ color: "#10b981" }}>&#39; &#39;</span>)<strong style={{ color: "#06b6d4" }}>.trim</strong>()</span>
-                  )}
-                  {minMode === "minify" && (
-                    <>
-                      <div>strip <span style={{ color: "#f59e0b" }}>/\/\*[\s\S]*?\*\//g</span> <span style={{ color: mu }}>← block comments</span></div>
-                      <div>strip <span style={{ color: "#f59e0b" }}>/\/\/[^\n]*/g</span> <span style={{ color: mu }}>← line comments</span></div>
-                      <div><strong style={{ color: "#06b6d4" }}>.replace</strong>(<span style={{ color: "#f59e0b" }}>/\s+/g</span>, <span style={{ color: "#10b981" }}>&#39; &#39;</span>)<strong style={{ color: "#06b6d4" }}>.trim</strong>()</div>
-                    </>
-                  )}
-                  {minMode === "collapse" && (
-                    <span>input<strong style={{ color: "#06b6d4" }}>.replace</strong>(<span style={{ color: "#f59e0b" }}>/\s+/g</span>, <span style={{ color: "#10b981" }}>&#39;&#39;</span>) <span style={{ color: mu }}>← removes ALL whitespace</span></span>
-                  )}
-                </div>
-
-                {/* Input */}
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                    <label style={{ ...lS, marginBottom: 0 }}>Input Code / Text</label>
-                    {minInput && (
-                      <span style={{ fontSize: 10, color: mu }}>
-                        <strong style={{ color: "#06b6d4" }}>{minInput.length.toLocaleString()}</strong> chars
-                      </span>
-                    )}
-                  </div>
-                  <textarea
-                    rows={6}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box" }}
-                    placeholder={"Paste code or text here…\n\nExample:\n  function hello ( ) {\n    return   'world';\n  }"}
-                    value={minInput}
-                    onChange={e => { setMinInput(e.target.value); setMinOutput(""); setMinStatus(""); setMinSavings(null); }}
-                  />
-                </div>
-
-                {/* Savings strip */}
-                {minSavings && (
-                  <div style={{
-                    display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center",
-                    padding: "8px 12px", borderRadius: 9,
-                    background: dk ? "#0f172a" : "#ecfeff",
-                    border: "1px solid #06b6d430",
-                    fontSize: "clamp(10px, 2.5vw, 11.5px)", fontWeight: 600,
-                  }}>
-                    <span style={{ color: mu }}>Before: <strong style={{ color: tx }}>{minSavings.before.toLocaleString()}</strong></span>
-                    <span style={{ color: mu }}>After: <strong style={{ color: "#06b6d4" }}>{minSavings.after.toLocaleString()}</strong></span>
-                    {minSavings.chars > 0 && (
-                      <span style={{ marginLeft: "auto", color: "#10b981" }}>↓ {minSavings.pct}% reduced</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Output */}
-                {minOutput && <OutputBlock value={minOutput} color="#06b6d4" label="Minified Output" />}
-
-                {/* Status */}
-                {sLine(minStatus)}
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <ActBtn
-                    label="Minify" onClick={handleMinify}
-                    color="linear-gradient(135deg, #06b6d4, #0891b2)"
-                    icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="21" y2="3"/><line x1="3" y1="21" x2="14" y2="10"/></svg>}
-                    disabled={!minInput.trim()} flex
-                  />
-                  <ActBtn
-                    label="Clear" onClick={handleMinClear}
-                    color={dk ? "#334155" : "#64748b"}
-                    icon={<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>}
-                    disabled={!minInput && !minOutput} flex
-                  />
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  100% browser-native · JS String.replace() regex formulas · zero server calls
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 2 — BASE64 PIPELINE
-                  btoa() to encode · atob() to decode · UTF-8 safe wrappers
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#8b5cf6")}>
-                  <div style={iconBubble("#8b5cf6")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Base64 Pipeline</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#8b5cf6", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>btoa() encode · atob() decode · UTF-8 safe</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#8b5cf622", color: "#8b5cf6", letterSpacing: "0.07em", flexShrink: 0 }}>BASE64</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#f5f3ff", border: "1px solid #8b5cf620" }}>
-                  Type or paste any text. Click <strong style={{ color: "#8b5cf6" }}>Encode</strong> to convert it to Base64 via <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#ede9fe", borderRadius: 4, padding: "1px 5px", color: "#7c3aed" }}>btoa()</code>, or <strong style={{ color: "#8b5cf6" }}>Decode</strong> a Base64 string back via <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#ede9fe", borderRadius: 4, padding: "1px 5px", color: "#7c3aed" }}>atob()</code>. UTF-8 characters (emoji, CJK, etc.) are handled safely via <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#ede9fe", borderRadius: 4, padding: "1px 5px", color: "#7c3aed" }}>TextEncoder</code>.
-                </div>
-
-                {/* Function reference pills */}
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {[
-                    { fn: "btoa(str)",  note: "string → Base64",   active: b64LastOp === "encode", color: "#8b5cf6" },
-                    { fn: "atob(b64)",  note: "Base64 → string",   active: b64LastOp === "decode", color: "#7c3aed" },
-                    { fn: "TextEncoder",note: "UTF-8 safe wrapper", active: false,                  color: "#a78bfa" },
-                  ].map(pill => (
-                    <div key={pill.fn} style={{
-                      padding: "4px 10px", borderRadius: 7, fontSize: 10.5, fontFamily: "monospace",
-                      background: pill.active ? pill.color + "20" : (dk ? "#1e293b" : "#f5f3ff"),
-                      border: `1px solid ${pill.active ? pill.color + "50" : pill.color + "25"}`,
-                      color: pill.active ? pill.color : mu,
-                      fontWeight: pill.active ? 700 : 400,
-                      transition: "all 0.2s",
-                    }}>
-                      <strong style={{ color: pill.color }}>{pill.fn}</strong>
-                      <span style={{ marginLeft: 6, fontSize: 9.5, opacity: 0.7 }}>{pill.note}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Input */}
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                    <label style={{ ...lS, marginBottom: 0 }}>Input</label>
-                    {b64Input && <span style={{ fontSize: 10, color: mu }}><strong style={{ color: "#8b5cf6" }}>{b64Input.length.toLocaleString()}</strong> chars</span>}
-                  </div>
-                  <textarea
-                    rows={5}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box" }}
-                    placeholder={"Paste plain text to encode…\n— or —\nPaste a Base64 string to decode.\n\nExample: Hello, World! 🌍"}
-                    value={b64Input}
-                    onChange={e => { setB64Input(e.target.value); setB64Output(""); setB64Status(""); setB64LastOp(null); }}
-                  />
-                </div>
-
-                {/* Output */}
-                {b64Output && (
-                  <>
-                    <SwapBtn onClick={handleB64Swap} disabled={!b64Output} color="#8b5cf6" />
-                    <OutputBlock value={b64Output} color="#8b5cf6" label={b64LastOp === "encode" ? "Base64 Encoded Output" : "Decoded Text Output"} />
-                  </>
-                )}
-
-                {/* Status */}
-                {sLine(b64Status)}
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <ActBtn
-                    label="Encode → Base64" onClick={handleB64Encode}
-                    color="linear-gradient(135deg, #8b5cf6, #7c3aed)"
-                    icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>}
-                    disabled={!b64Input.trim()} flex
-                  />
-                  <ActBtn
-                    label="Decode ← Base64" onClick={handleB64Decode}
-                    color="linear-gradient(135deg, #7c3aed, #6d28d9)"
-                    icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>}
-                    disabled={!b64Input.trim()} flex
-                  />
-                  <ActBtn
-                    label="Clear" onClick={handleB64Clear}
-                    color={dk ? "#334155" : "#64748b"}
-                    icon={<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>}
-                    disabled={!b64Input && !b64Output}
-                  />
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  btoa() · atob() · TextEncoder/Decoder UTF-8 wrapper · handles emoji &amp; CJK safely
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 3 — URL TRANSLATOR
-                  encodeURIComponent() · decodeURIComponent() · encodeURI()
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#10b981")}>
-                  <div style={iconBubble("#10b981")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <line x1="2" y1="12" x2="22" y2="12"/>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>URL Translator</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#10b981", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>encodeURIComponent · decodeURIComponent</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#10b98122", color: "#10b981", letterSpacing: "0.07em", flexShrink: 0 }}>URL</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "8px 12px", borderRadius: 8, background: dk ? "#0f172a50" : "#f0fdf4", border: "1px solid #10b98120" }}>
-                  <strong style={{ color: "#10b981" }}>Component mode</strong> uses <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#d1fae5", borderRadius: 4, padding: "1px 5px", color: "#059669" }}>encodeURIComponent()</code> — encodes everything including <code style={{ fontSize: 10, color: "#059669" }}>: / ? # &amp; =</code> — ideal for query parameter values. <strong style={{ color: "#10b981" }}>Full URL mode</strong> uses <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#d1fae5", borderRadius: 4, padding: "1px 5px", color: "#059669" }}>encodeURI()</code> which preserves URL structure characters.
-                </div>
-
-                {/* Mode tabs */}
-                <div>
-                  <label style={lS}>Encoding Scope</label>
-                  <ModeTabRow modes={URL_MODES} value={urlMode} onChange={m => { setUrlMode(m); setUrlOutput(""); setUrlStatus(""); setUrlLastOp(null); }} color="#10b981" />
-                  <div style={{ marginTop: 6, fontSize: 10.5, color: mu, fontStyle: "italic" }}>
-                    {URL_MODES.find(m => m.value === urlMode)?.desc}
-                  </div>
-                </div>
-
-                {/* Function formula display */}
-                <div style={{
-                  borderRadius: 8, border: "1px solid #10b98125",
-                  background: dk ? "#0f172a" : "#f0fdf4",
-                  padding: "8px 12px", fontFamily: "monospace",
-                  fontSize: "clamp(9.5px, 2vw, 11px)", color: "#059669", lineHeight: 1.7,
-                }}>
-                  <div>
-                    <strong style={{ color: "#10b981" }}>Encode:</strong>{" "}
-                    {urlMode === "component"
-                      ? <span><strong style={{ color: "#10b981" }}>encodeURIComponent</strong>(<span style={{ color: "#f59e0b" }}>input</span>)</span>
-                      : <span><strong style={{ color: "#10b981" }}>encodeURI</strong>(<span style={{ color: "#f59e0b" }}>input</span>)</span>
-                    }
-                  </div>
-                  <div>
-                    <strong style={{ color: "#10b981" }}>Decode:</strong>{" "}
-                    <span><strong style={{ color: "#10b981" }}>decodeURIComponent</strong>(<span style={{ color: "#f59e0b" }}>input</span>)</span>
-                  </div>
-                </div>
-
-                {/* Input */}
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                    <label style={{ ...lS, marginBottom: 0 }}>Input</label>
-                    {urlInput && <span style={{ fontSize: 10, color: mu }}><strong style={{ color: "#10b981" }}>{urlInput.length.toLocaleString()}</strong> chars</span>}
-                  </div>
-                  <textarea
-                    rows={4}
-                    style={{ ...iS, resize: "vertical", lineHeight: 1.65, fontFamily: "monospace", fontSize: 12, width: "100%", boxSizing: "border-box" }}
-                    placeholder={"Plain text or URL to encode…\n— or —\nPercent-encoded string to decode.\n\nExample: Hello World! café résumé"}
-                    value={urlInput}
-                    onChange={e => { setUrlInput(e.target.value); setUrlOutput(""); setUrlStatus(""); setUrlLastOp(null); }}
-                  />
-                </div>
-
-                {/* Character map — what gets encoded */}
-                {urlInput && !urlOutput && (
-                  <div style={{
-                    borderRadius: 8, border: `1px solid #10b98120`,
-                    background: dk ? "#0f172a" : "#f0fdf4",
-                    padding: "8px 12px", fontSize: 10.5, color: mu, lineHeight: 1.6,
-                  }}>
-                    <strong style={{ color: "#10b981", fontSize: 10 }}>
-                      {urlMode === "component" ? "encodeURIComponent will encode:" : "encodeURI will preserve:"}
-                    </strong>{" "}
-                    {urlMode === "component"
-                      ? <span>spaces, <code style={{ color: "#10b981" }}>! # $ &amp; ' ( ) * + , / : ; = ? @ [ ]</code> and non-ASCII chars</span>
-                      : <span><code style={{ color: "#10b981" }}>; , / ? : @ &amp; = + $ #</code> — only spaces and non-ASCII are encoded</span>
-                    }
-                  </div>
-                )}
-
-                {/* Output */}
-                {urlOutput && (
-                  <>
-                    <SwapBtn onClick={handleUrlSwap} disabled={!urlOutput} color="#10b981" />
-                    <OutputBlock
-                      value={urlOutput} color="#10b981"
-                      label={urlLastOp === "encode" ? "URL-Encoded Output" : "Decoded Output"}
-                    />
-                  </>
-                )}
-
-                {/* Status */}
-                {sLine(urlStatus)}
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <ActBtn
-                    label="Encode" onClick={handleUrlEncode}
-                    color="linear-gradient(135deg, #10b981, #059669)"
-                    icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>}
-                    disabled={!urlInput.trim()} flex
-                  />
-                  <ActBtn
-                    label="Decode" onClick={handleUrlDecode}
-                    color="linear-gradient(135deg, #059669, #047857)"
-                    icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>}
-                    disabled={!urlInput.trim()} flex
-                  />
-                  <ActBtn
-                    label="Clear" onClick={handleUrlClear}
-                    color={dk ? "#334155" : "#64748b"}
-                    icon={<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>}
-                    disabled={!urlInput && !urlOutput}
-                  />
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  encodeURIComponent · decodeURIComponent · encodeURI · 100% browser-native
-                </div>
-              </div>
-
-            </div>
-          ); /* end DeveloperModule return */
-        } /* end function DeveloperModule */
-
-        /* Render inner component with all required style helpers forwarded */
-        return (
-          <DeveloperModule
-            dark={dark} surface={surface} border={border} text={text} muted={muted}
-            inputStyle={inputStyle} labelStyle={labelStyle}
-            panelStyle={panelStyle} panelHeaderStyle={panelHeaderStyle} iconBubble={iconBubble}
-          />
-        );
-      })()}{/* end utilCategory === "developer" IIFE */}
-
-      {/* ══════════════════════════════════════════════════════════════════════
-          CATEGORY: SECURITY NODES — placeholder, ready for security tools next phase
-          ══════════════════════════════════════════════════════════════════ */}
-      {utilCategory === "security" && (() => {
-
-        /* ══════════════════════════════════════════════════════════════════
-           SecurityModule — inner component so useState/useRef hooks are legal.
-           Two cards:
-             1. Local Encryption Tool  — Web Crypto AES-GCM encrypt/decrypt
-             2. Self-Destruct Simulator — async fetch('/api/links/create')
-                                          with interactive mock UI for Vercel
-           ══════════════════════════════════════════════════════════════════ */
-        function SecurityModule({ dark: dk, surface: sf, border: bd, text: tx,
-                                  muted: mu, inputStyle: iS, labelStyle: lS,
-                                  panelStyle, panelHeaderStyle, iconBubble }) {
-
-          /* ── Shared status line ─────────────────────────────────────── */
-          const sLine = (msg) => {
-            if (!msg) return null;
-            const isOk   = msg.startsWith("✓");
-            const isWarn = msg.startsWith("⚠");
-            const isInfo = msg.startsWith("⏳");
-            return (
-              <div style={{
-                fontSize: "clamp(10.5px, 2.5vw, 11.5px)", padding: "8px 12px",
-                borderRadius: 8, fontFamily: "monospace", wordBreak: "break-word", lineHeight: 1.5,
-                background: dk ? "#0f172a" : "#f8fafc",
-                border: `1px solid ${isOk ? "#10b98140" : isWarn ? "#ef444440" : isInfo ? "#6366f140" : bd}`,
-                color: isOk ? "#10b981" : isWarn ? "#ef4444" : isInfo ? "#818cf8" : mu,
-              }}>{msg}</div>
-            );
-          };
-
-          /* ── Shared copy button ─────────────────────────────────────── */
-          const CopyBtn = ({ value, color, label }) => {
-            const [copied, setCopied] = React.useState(false);
-            const doCopy = () => {
-              if (!value) return;
-              navigator.clipboard.writeText(value).catch(() => {
-                const ta = document.createElement("textarea");
-                ta.value = value; ta.style.cssText = "position:fixed;opacity:0";
-                document.body.appendChild(ta); ta.select();
-                document.execCommand("copy"); document.body.removeChild(ta);
-              });
-              setCopied(true); setTimeout(() => setCopied(false), 2000);
-            };
-            return (
-              <button onClick={doCopy} disabled={!value} style={{
-                display: "flex", alignItems: "center", gap: 5, padding: "6px 12px",
-                borderRadius: 7, border: `1px solid ${copied ? "#10b98150" : color + "40"}`,
-                background: copied ? "#10b98112" : "transparent",
-                color: copied ? "#10b981" : color,
-                fontSize: 11, fontWeight: 700, cursor: value ? "pointer" : "not-allowed",
-                opacity: value ? 1 : 0.4, transition: "all 0.15s",
-                WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-              }}>
-                {copied
-                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                }
-                {copied ? "Copied!" : (label || "Copy")}
-              </button>
-            );
-          };
-
-          /* ── Shared action button ───────────────────────────────────── */
-          const ActBtn = ({ label, onClick, color, icon, disabled, flex }) => (
-            <button onClick={onClick} disabled={!!disabled} style={{
-              flex: flex ? "1 1 0" : undefined, width: flex ? undefined : "100%",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-              padding: "12px 16px", borderRadius: 10, border: "none",
-              background: disabled ? (dk ? "#1e293b" : "#e2e8f0") : color,
-              color: disabled ? mu : "#fff",
-              fontSize: "clamp(11.5px, 2.5vw, 13px)", fontWeight: 700,
-              cursor: disabled ? "not-allowed" : "pointer",
-              transition: "filter 0.15s, transform 0.1s", opacity: disabled ? 0.5 : 1,
-              WebkitTapHighlightColor: "transparent", touchAction: "manipulation", userSelect: "none",
-            }}
-              onMouseEnter={e => { if (!disabled) e.currentTarget.style.filter = "brightness(1.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.filter = ""; e.currentTarget.style.transform = ""; }}
-              onMouseDown={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-              onTouchStart={e => { if (!disabled) e.currentTarget.style.transform = "scale(0.98)"; }}
-              onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-            >{icon}{label}</button>
-          );
-
-          /* ══════════════════════════════════════════════════════════════
-             CARD 1 — LOCAL ENCRYPTION TOOL
-             Web Crypto API — AES-GCM 256-bit encrypt / decrypt
-             Key derived from passphrase via PBKDF2 (100 000 iterations)
-             All processing 100% client-side. Zero bytes leave the browser.
-             ══════════════════════════════════════════════════════════════ */
-          const [encInput,    setEncInput]    = React.useState("");
-          const [encPass,     setEncPass]     = React.useState("");
-          const [encOutput,   setEncOutput]   = React.useState("");
-          const [encStatus,   setEncStatus]   = React.useState("");
-          const [encBusy,     setEncBusy]     = React.useState(false);
-          const [encMode,     setEncMode]     = React.useState("encrypt"); // "encrypt"|"decrypt"
-          const [encShowPass, setEncShowPass] = React.useState(false);
-
-          /* ── Web Crypto helpers ── */
-          const enc = new TextEncoder();
-          const dec = new TextDecoder();
-
-          /* Derive an AES-GCM key from a passphrase + salt via PBKDF2 */
-          const deriveKey = async (passphrase, salt) => {
-            const keyMaterial = await crypto.subtle.importKey(
-              "raw", enc.encode(passphrase), { name: "PBKDF2" }, false, ["deriveKey"]
-            );
-            return crypto.subtle.deriveKey(
-              { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
-              keyMaterial,
-              { name: "AES-GCM", length: 256 },
-              false,
-              ["encrypt", "decrypt"]
-            );
-          };
-
-          /* Uint8Array ↔ Base64 helpers for safe storage/display */
-          const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
-          const fromB64 = (b64) => {
-            const bin = atob(b64);
-            const buf = new Uint8Array(bin.length);
-            for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-            return buf;
-          };
-
-          const handleEncrypt = async () => {
-            if (!encInput.trim()) { setEncStatus("⚠ Enter a message to encrypt."); return; }
-            if (!encPass.trim())  { setEncStatus("⚠ Enter a passphrase."); return; }
-            setEncBusy(true); setEncStatus("⏳ Deriving key via PBKDF2…");
-            try {
-              const salt = crypto.getRandomValues(new Uint8Array(16));
-              const iv   = crypto.getRandomValues(new Uint8Array(12));
-              const key  = await deriveKey(encPass, salt);
-              setEncStatus("⏳ Encrypting with AES-GCM 256-bit…");
-              const cipherBuf = await crypto.subtle.encrypt(
-                { name: "AES-GCM", iv }, key, enc.encode(encInput)
-              );
-              /* Pack: [salt 16B][iv 12B][ciphertext] → Base64 */
-              const combined = new Uint8Array(16 + 12 + cipherBuf.byteLength);
-              combined.set(salt, 0);
-              combined.set(iv, 16);
-              combined.set(new Uint8Array(cipherBuf), 28);
-              setEncOutput(toB64(combined.buffer));
-              setEncStatus("✓ Encrypted — share the output string and passphrase separately. Never together.");
-            } catch (err) {
-              setEncStatus(`⚠ Encryption failed: ${err.message}`);
-            } finally { setEncBusy(false); }
-          };
-
-          const handleDecrypt = async () => {
-            if (!encInput.trim()) { setEncStatus("⚠ Paste the encrypted string to decrypt."); return; }
-            if (!encPass.trim())  { setEncStatus("⚠ Enter the decryption passphrase."); return; }
-            setEncBusy(true); setEncStatus("⏳ Deriving key via PBKDF2…");
-            try {
-              const combined = fromB64(encInput.trim());
-              if (combined.length < 29) throw new Error("Input too short — not a valid encrypted payload.");
-              const salt      = combined.slice(0, 16);
-              const iv        = combined.slice(16, 28);
-              const cipher    = combined.slice(28);
-              const key       = await deriveKey(encPass, salt);
-              setEncStatus("⏳ Decrypting with AES-GCM 256-bit…");
-              const plainBuf  = await crypto.subtle.decrypt(
-                { name: "AES-GCM", iv }, key, cipher
-              );
-              setEncOutput(dec.decode(plainBuf));
-              setEncStatus("✓ Decrypted successfully — original message recovered.");
-            } catch (err) {
-              const msg = err.name === "OperationError"
-                ? "Wrong passphrase or corrupted payload — decryption failed."
-                : err.message;
-              setEncStatus(`⚠ ${msg}`);
-            } finally { setEncBusy(false); }
-          };
-
-          const handleEncClear = () => {
-            setEncInput(""); setEncPass(""); setEncOutput(""); setEncStatus(""); setEncBusy(false);
-          };
-
-          /* ══════════════════════════════════════════════════════════════
-             CARD 2 — SELF-DESTRUCT SIMULATOR
-             Backend-ready: async fetch('/api/links/create') POST
-             Interactive mock UI for Vercel dev/preview mode
-             ══════════════════════════════════════════════════════════════ */
-          const [sdContent,  setSdContent]  = React.useState("");
-          const [sdExpiry,   setSdExpiry]   = React.useState("1h");
-          const [sdViews,    setSdViews]    = React.useState("1");
-          const [sdPass,     setSdPass]     = React.useState("");
-          const [sdResult,   setSdResult]   = React.useState(null);  // { url, id, expiry, views }
-          const [sdStatus,   setSdStatus]   = React.useState("");
-          const [sdBusy,     setSdBusy]     = React.useState(false);
-          const [sdCopied,   setSdCopied]   = React.useState(false);
-          const [sdShowPass, setSdShowPass] = React.useState(false);
-          const [sdDestroyed,setSdDestroyed]= React.useState(false);
-
-          const SD_EXPIRY_OPTS = [
-            { value: "15m",  label: "15 min" },
-            { value: "1h",   label: "1 hour" },
-            { value: "6h",   label: "6 hours" },
-            { value: "24h",  label: "24 hours" },
-            { value: "7d",   label: "7 days" },
-          ];
-          const SD_VIEWS_OPTS = [
-            { value: "1",  label: "1 view" },
-            { value: "3",  label: "3 views" },
-            { value: "5",  label: "5 views" },
-            { value: "10", label: "10 views" },
-          ];
-
-          const handleSdCreate = async () => {
-            if (!sdContent.trim()) { setSdStatus("⚠ Enter secret content first."); return; }
-            setSdBusy(true); setSdResult(null); setSdDestroyed(false);
-            setSdStatus("⏳ Sending to secure link API…");
-
-            try {
-              /* ── Backend-ready POST ─────────────────────────────────────
-                 Replace origin with your actual API host in production.
-                 The server should:
-                   1. Encrypt `content` server-side with a random key
-                   2. Store the encrypted payload in your DB
-                   3. Return a one-time access URL + expiry metadata
-                 ─────────────────────────────────────────────────────── */
-              const res = await fetch("/api/links/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  content:    sdContent,
-                  expiry:     sdExpiry,
-                  maxViews:   parseInt(sdViews, 10),
-                  passphrase: sdPass || null,
-                  destroyOnRead: parseInt(sdViews, 10) === 1,
-                }),
-              });
-
-              if (!res.ok) throw new Error(`Server ${res.status}: ${res.statusText}`);
-              const data = await res.json();
-              setSdResult({
-                url:    data.url || `${window.location.origin}/s/${data.id}`,
-                id:     data.id,
-                expiry: data.expiry || sdExpiry,
-                views:  data.maxViews || parseInt(sdViews, 10),
-              });
-              setSdStatus("✓ Self-destruct link created successfully via API.");
-
-            } catch (err) {
-              /* ── Vercel / local mock fallback ──────────────────────────
-                 API not yet deployed — generate a realistic mock link so
-                 the UI is fully interactive and demonstrable immediately.
-                 ──────────────────────────────────────────────────────── */
-              console.warn("[Self-Destruct] API offline:", err.message);
-
-              const mockId  = Array.from(crypto.getRandomValues(new Uint8Array(8)))
-                              .map(b => b.toString(36)).join("").slice(0, 10);
-              const expiryLabels = { "15m": "15 minutes", "1h": "1 hour", "6h": "6 hours", "24h": "24 hours", "7d": "7 days" };
-
-              setSdResult({
-                url:    `${window.location.origin}/s/${mockId}`,
-                id:     mockId,
-                expiry: sdExpiry,
-                views:  parseInt(sdViews, 10),
-                isMock: true,
-              });
-              setSdStatus(`⚠ API offline — mock link shown. Wire /api/links/create to activate. Expires in ${expiryLabels[sdExpiry] || sdExpiry} · ${sdViews} view${parseInt(sdViews,10) > 1 ? "s" : ""}.`);
-            } finally {
-              setSdBusy(false);
-            }
-          };
-
-          const handleSdCopyLink = () => {
-            if (!sdResult) return;
-            navigator.clipboard.writeText(sdResult.url).catch(() => {});
-            setSdCopied(true); setTimeout(() => setSdCopied(false), 2500);
-          };
-
-          const handleSdDestroy = () => {
-            /* Simulate instant destruction — in production: DELETE /api/links/:id */
-            setSdDestroyed(true);
-            setSdResult(null);
-            setSdStatus("✓ Link destroyed. The secret content is permanently gone.");
-          };
-
-          const handleSdReset = () => {
-            setSdContent(""); setSdExpiry("1h"); setSdViews("1");
-            setSdPass(""); setSdResult(null); setSdStatus(""); setSdBusy(false);
-            setSdCopied(false); setSdDestroyed(false); setSdShowPass(false);
-          };
-
-          /* ── Pill tab row (reusable inside this module) ─────────────── */
-          const TabPills = ({ opts, value, onChange, color }) => (
-            <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-              {opts.map(o => {
-                const active = value === o.value;
-                return (
-                  <button key={o.value} onClick={() => onChange(o.value)} style={{
-                    flex: "1 1 auto", padding: "8px 8px", borderRadius: 8,
-                    border: `1px solid ${active ? color : bd}`,
-                    background: active ? color : "transparent",
-                    color: active ? "#fff" : mu,
-                    fontSize: "clamp(10.5px, 2vw, 12px)", fontWeight: active ? 700 : 500,
-                    cursor: "pointer", transition: "all 0.15s", whiteSpace: "nowrap",
-                    WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                  }}
-                    onMouseDown={e => { if (!active) e.currentTarget.style.transform = "scale(0.97)"; }}
-                    onMouseUp={e => { e.currentTarget.style.transform = ""; }}
-                    onTouchStart={e => { if (!active) e.currentTarget.style.transform = "scale(0.97)"; }}
-                    onTouchEnd={e => { e.currentTarget.style.transform = ""; }}
-                  >{o.label}</button>
-                );
-              })}
-            </div>
-          );
-
-          /* ── Password input with show/hide toggle ───────────────────── */
-          const PassField = ({ value, onChange, placeholder, show, onToggle, color }) => (
-            <div style={{ position: "relative" }}>
-              <input
-                type={show ? "text" : "password"}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                style={{ ...iS, width: "100%", boxSizing: "border-box", paddingRight: 40 }}
-              />
-              <button onClick={onToggle} style={{
-                position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
-                background: "none", border: "none", cursor: "pointer", color: mu,
-                padding: 4, display: "flex", alignItems: "center",
-                WebkitTapHighlightColor: "transparent",
-              }}>
-                {show
-                  ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                  : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                }
-              </button>
-            </div>
-          );
-
-          /* ── RENDER ─────────────────────────────────────────────────── */
-          return (
-            <div style={{
-              display: "grid", gridTemplateColumns: "1fr",
-              gap: 18, width: "100%", maxWidth: "100%", boxSizing: "border-box",
-            }}>
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 1 — LOCAL ENCRYPTION TOOL
-                  Web Crypto AES-GCM 256 · PBKDF2 key derivation · Base64 I/O
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#10b981")}>
-                  <div style={iconBubble("#10b981")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Local Encryption Tool</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#10b981", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>AES-GCM 256 · PBKDF2 · Web Crypto API</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#10b98122", color: "#10b981", letterSpacing: "0.07em", flexShrink: 0 }}>CRYPTO</span>
-                </div>
-
-                {/* How it works */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "9px 13px", borderRadius: 9, background: dk ? "#0f172a50" : "#f0fdf4", border: "1px solid #10b98120" }}>
-                  Uses the browser's built-in <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#d1fae5", borderRadius: 4, padding: "1px 5px", color: "#059669" }}>Web Crypto API</code> — your passphrase is fed through <strong style={{ color: "#10b981" }}>PBKDF2</strong> (100,000 iterations, SHA-256) to derive a fresh <strong style={{ color: "#10b981" }}>AES-GCM 256-bit</strong> key. A random 96-bit IV and 128-bit salt are generated for every encryption. Output is packed as <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#d1fae5", borderRadius: 4, padding: "1px 5px", color: "#059669" }}>salt‖iv‖ciphertext</code> and Base64-encoded. <strong style={{ color: "#10b981" }}>Zero bytes leave the browser.</strong>
-                </div>
-
-                {/* Mode selector */}
-                <div>
-                  <label style={lS}>Operation</label>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    {[{ value: "encrypt", label: "🔒 Encrypt" }, { value: "decrypt", label: "🔓 Decrypt" }].map(m => {
-                      const active = encMode === m.value;
-                      return (
-                        <button key={m.value} onClick={() => { setEncMode(m.value); setEncOutput(""); setEncStatus(""); }} style={{
-                          flex: 1, padding: "10px 8px", borderRadius: 9, fontWeight: 700,
-                          fontSize: "clamp(11.5px, 2.5vw, 13px)", cursor: "pointer",
-                          border: `1.5px solid ${active ? "#10b981" : bd}`,
-                          background: active ? "#10b981" : "transparent",
-                          color: active ? "#fff" : mu,
-                          transition: "all 0.15s",
-                          WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                        }}>{m.label}</button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Input textarea */}
-                <div>
-                  <label style={lS}>
-                    {encMode === "encrypt" ? "Plaintext Message" : "Encrypted Payload (Base64)"}
-                  </label>
-                  <textarea
-                    rows={5}
-                    style={{ ...iS, resize: "vertical", fontFamily: encMode === "decrypt" ? "monospace" : "inherit", fontSize: 12, lineHeight: 1.65, width: "100%", boxSizing: "border-box" }}
-                    placeholder={encMode === "encrypt"
-                      ? "Type your secret message here…"
-                      : "Paste the Base64-encoded encrypted payload here…"}
-                    value={encInput}
-                    onChange={e => { setEncInput(e.target.value); setEncOutput(""); setEncStatus(""); }}
-                  />
-                  {encInput && (
-                    <div style={{ fontSize: 10, color: mu, marginTop: 4 }}>
-                      <strong style={{ color: "#10b981" }}>{encInput.length.toLocaleString()}</strong> chars
-                    </div>
-                  )}
-                </div>
-
-                {/* Passphrase field */}
-                <div>
-                  <label style={lS}>Passphrase</label>
-                  <PassField
-                    value={encPass} onChange={e => setEncPass(e.target.value)}
-                    placeholder="Enter a strong, secret passphrase…"
-                    show={encShowPass} onToggle={() => setEncShowPass(v => !v)}
-                    color="#10b981"
-                  />
-                  {encPass && (
-                    <div style={{ marginTop: 5, display: "flex", gap: 4, alignItems: "center" }}>
-                      {/* Strength meter */}
-                      {[
-                        encPass.length >= 8,
-                        /[A-Z]/.test(encPass),
-                        /[0-9]/.test(encPass),
-                        /[^A-Za-z0-9]/.test(encPass),
-                        encPass.length >= 16,
-                      ].map((ok, i) => (
-                        <div key={i} style={{
-                          flex: 1, height: 4, borderRadius: 2,
-                          background: ok ? (i < 2 ? "#f59e0b" : i < 4 ? "#06b6d4" : "#10b981") : (dk ? "#334155" : "#e2e8f0"),
-                          transition: "background 0.2s",
-                        }} />
-                      ))}
-                      <div style={{ fontSize: 10, color: mu, marginLeft: 6, whiteSpace: "nowrap" }}>
-                        {encPass.length < 8 ? "Weak" : encPass.length < 12 ? "Fair" : encPass.length < 16 ? "Good" : "Strong"}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Output */}
-                {encOutput && (
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
-                      <label style={{ ...lS, marginBottom: 0 }}>
-                        {encMode === "encrypt" ? "Encrypted Output (Base64)" : "Decrypted Message"}
-                      </label>
-                      <CopyBtn value={encOutput} color="#10b981" />
-                    </div>
-                    <textarea
-                      rows={4} readOnly value={encOutput}
-                      style={{
-                        ...iS, resize: "vertical", width: "100%", boxSizing: "border-box",
-                        fontFamily: encMode === "encrypt" ? "monospace" : "inherit",
-                        fontSize: 12, lineHeight: 1.65, color: "#10b981",
-                        borderColor: "#10b98150", background: dk ? "#0f172a" : "#f0fdf4",
-                      }}
-                    />
-                    {encMode === "encrypt" && (
-                      <div style={{ marginTop: 6, fontSize: 10.5, color: mu, lineHeight: 1.5 }}>
-                        <strong style={{ color: "#f59e0b" }}>⚠ Security reminder:</strong> send the encrypted string and the passphrase through separate channels. Never share both together.
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Crypto spec badges */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {[
-                    { label: "AES-GCM",   note: "256-bit symmetric",  color: "#10b981" },
-                    { label: "PBKDF2",    note: "100k iterations",     color: "#059669" },
-                    { label: "SHA-256",   note: "hash function",       color: "#34d399" },
-                    { label: "96-bit IV", note: "random per message",  color: "#6ee7b7" },
-                  ].map(b => (
-                    <div key={b.label} style={{
-                      padding: "3px 9px", borderRadius: 6, fontSize: 10, fontFamily: "monospace",
-                      background: b.color + "12", border: `1px solid ${b.color}28`, color: mu,
-                    }}>
-                      <strong style={{ color: b.color }}>{b.label}</strong>
-                      <span style={{ marginLeft: 5, opacity: 0.7 }}>{b.note}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Status */}
-                {sLine(encStatus)}
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <ActBtn
-                    label={encBusy ? (encMode === "encrypt" ? "Encrypting…" : "Decrypting…") : (encMode === "encrypt" ? "Encrypt Message" : "Decrypt Message")}
-                    onClick={encMode === "encrypt" ? handleEncrypt : handleDecrypt}
-                    color={encMode === "encrypt" ? "linear-gradient(135deg, #10b981, #059669)" : "linear-gradient(135deg, #059669, #047857)"}
-                    icon={encMode === "encrypt"
-                      ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                      : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 1 1 9.9-1"/></svg>
-                    }
-                    disabled={encBusy || !encInput.trim() || !encPass.trim()} flex
-                  />
-                  <ActBtn
-                    label="Clear" onClick={handleEncClear}
-                    color={dk ? "#334155" : "#64748b"}
-                    icon={<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>}
-                    disabled={!encInput && !encPass && !encOutput}
-                  />
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  Web Crypto API · AES-GCM · PBKDF2 · zero server calls · zero data transmission
-                </div>
-              </div>
-
-
-              {/* ═══════════════════════════════════════════════════════════
-                  CARD 2 — SELF-DESTRUCT SIMULATOR
-                  async fetch('/api/links/create') POST → mock UI fallback
-                  ═══════════════════════════════════════════════════════════ */}
-              <div style={panelStyle}>
-
-                <div style={panelHeaderStyle("#ef4444")}>
-                  <div style={iconBubble("#ef4444")}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6"/>
-                      <path d="M19 6l-1 14H6L5 6"/>
-                      <path d="M10 11v6"/><path d="M14 11v6"/>
-                      <path d="M9 6V4h6v2"/>
-                    </svg>
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: "clamp(13px, 3.5vw, 14px)", fontWeight: 800, color: tx }}>Self-Destruct Simulator</div>
-                    <div style={{ fontSize: "clamp(9px, 2.5vw, 10.5px)", color: "#ef4444", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>One-time links · backend-ready API</div>
-                  </div>
-                  <span style={{ marginLeft: "auto", fontSize: 9, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: "#ef444422", color: "#ef4444", letterSpacing: "0.07em", flexShrink: 0 }}>DESTRUCT</span>
-                </div>
-
-                {/* Architecture explanation */}
-                <div style={{ fontSize: "clamp(10.5px, 2.5vw, 12px)", color: mu, lineHeight: 1.6, padding: "9px 13px", borderRadius: 9, background: dk ? "#0f172a50" : "#fef2f2", border: "1px solid #ef444420" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <strong style={{ color: "#ef4444", fontSize: "clamp(10px, 2vw, 11px)" }}>True destruction requires a server.</strong>
-                  </div>
-                  Real self-destructing links need a secure database to store (and delete) the secret. This card fires <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#fee2e2", borderRadius: 4, padding: "1px 5px", color: "#dc2626" }}>POST /api/links/create</code> — when the route is wired, it goes live instantly. Until then, a cryptographically random mock link is generated locally for full UI demonstration.
-                </div>
-
-                {/* ── CREATE FORM (shown when no result yet) ── */}
-                {!sdResult && !sdDestroyed && (
-                  <>
-                    {/* Secret content */}
-                    <div>
-                      <label style={lS}>Secret Content</label>
-                      <textarea
-                        rows={5}
-                        style={{ ...iS, resize: "vertical", fontSize: 12, lineHeight: 1.65, width: "100%", boxSizing: "border-box" }}
-                        placeholder={"Type your secret message, token, or link…\n\nThis content will be destroyed after the configured number of views or when the timer expires."}
-                        value={sdContent}
-                        onChange={e => setSdContent(e.target.value)}
-                      />
-                      {sdContent && (
-                        <div style={{ fontSize: 10, color: mu, marginTop: 4 }}>
-                          <strong style={{ color: "#ef4444" }}>{sdContent.length.toLocaleString()}</strong> chars
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Expiry tabs */}
-                    <div>
-                      <label style={lS}>Link Expiry</label>
-                      <TabPills opts={SD_EXPIRY_OPTS} value={sdExpiry} onChange={setSdExpiry} color="#ef4444" />
-                    </div>
-
-                    {/* Max views tabs */}
-                    <div>
-                      <label style={lS}>Max Views Before Destruction</label>
-                      <TabPills opts={SD_VIEWS_OPTS} value={sdViews} onChange={setSdViews} color="#ef4444" />
-                    </div>
-
-                    {/* Optional passphrase */}
-                    <div>
-                      <label style={lS}>Optional Access Passphrase</label>
-                      <PassField
-                        value={sdPass} onChange={e => setSdPass(e.target.value)}
-                        placeholder="Leave blank for no passphrase protection…"
-                        show={sdShowPass} onToggle={() => setSdShowPass(v => !v)}
-                        color="#ef4444"
-                      />
-                    </div>
-
-                    {/* API contract preview */}
-                    <div style={{ borderRadius: 9, border: `1px solid ${bd}`, overflow: "hidden", fontSize: "clamp(9.5px, 2vw, 11px)" }}>
-                      <div style={{ padding: "6px 12px", borderBottom: `1px solid ${bd}`, fontWeight: 700, color: mu, letterSpacing: "0.06em", textTransform: "uppercase", fontSize: 9.5, background: dk ? "#0f172a" : "#fafafa" }}>
-                        POST /api/links/create — Request Payload
-                      </div>
-                      <pre style={{
-                        margin: 0, padding: "10px 12px", overflow: "auto",
-                        background: dk ? "#0f172a" : "#f8fafc",
-                        fontFamily: "monospace", fontSize: "clamp(9px, 2vw, 10.5px)",
-                        color: mu, lineHeight: 1.7,
-                      }}>{JSON.stringify({
-                        content:       sdContent || "<your secret>",
-                        expiry:        sdExpiry,
-                        maxViews:      parseInt(sdViews, 10),
-                        passphrase:    sdPass || null,
-                        destroyOnRead: parseInt(sdViews, 10) === 1,
-                      }, null, 2)}</pre>
-                    </div>
-
-                    {sLine(sdStatus)}
-
-                    <ActBtn
-                      label={sdBusy ? "Creating secure link…" : "Generate Self-Destruct Link"}
-                      onClick={handleSdCreate}
-                      color="linear-gradient(135deg, #ef4444, #dc2626)"
-                      icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>}
-                      disabled={sdBusy || !sdContent.trim()}
-                    />
-                  </>
-                )}
-
-                {/* ── RESULT PANEL ── */}
-                {sdResult && !sdDestroyed && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-
-                    {/* Mock badge */}
-                    {sdResult.isMock && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "7px 12px", borderRadius: 8, background: "#f59e0b12", border: "1px solid #f59e0b30", fontSize: 11, color: "#d97706", fontWeight: 600 }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        Demo mode — API offline. Wire /api/links/create for live destruction.
-                      </div>
-                    )}
-
-                    {/* Success banner */}
-                    <div style={{ borderRadius: 12, border: "1px solid #10b98140", background: dk ? "#022c22" : "#f0fdf4", padding: "16px 18px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: "#10b98120", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 13, fontWeight: 800, color: "#10b981" }}>Self-Destruct Link Created</div>
-                          <div style={{ fontSize: 10.5, color: mu }}>Expires in {SD_EXPIRY_OPTS.find(o => o.value === sdResult.expiry)?.label || sdResult.expiry} · {sdResult.views} view{sdResult.views > 1 ? "s" : ""} max</div>
-                        </div>
-                      </div>
-
-                      {/* Link display */}
-                      <div style={{ borderRadius: 8, background: dk ? "#0f172a" : "#fff", border: `1px solid #10b98130`, padding: "9px 12px", fontFamily: "monospace", fontSize: "clamp(9.5px, 2vw, 11px)", color: "#10b981", wordBreak: "break-all", lineHeight: 1.5, marginBottom: 10 }}>
-                        {sdResult.url}
-                      </div>
-
-                      {/* Copy + Destroy row */}
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <button
-                          onClick={handleSdCopyLink}
-                          style={{
-                            flex: "1 1 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                            padding: "10px 14px", borderRadius: 9, border: "none", cursor: "pointer",
-                            background: sdCopied ? "#10b981" : "#10b98120",
-                            color: sdCopied ? "#fff" : "#10b981",
-                            fontSize: 12.5, fontWeight: 700, transition: "all 0.2s",
-                            WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                          }}
-                        >
-                          {sdCopied
-                            ? <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!</>
-                            : <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Link</>
-                          }
-                        </button>
-                        <button
-                          onClick={handleSdDestroy}
-                          style={{
-                            flex: "1 1 auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                            padding: "10px 14px", borderRadius: 9, border: "1.5px solid #ef444460",
-                            background: "transparent", color: "#ef4444",
-                            fontSize: 12.5, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
-                            WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                          }}
-                          onMouseEnter={e => { e.currentTarget.style.background = "#ef444415"; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
-                          Destroy Now
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Link metadata */}
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                      {[
-                        { k: "Link ID", v: sdResult.id },
-                        { k: "Expiry", v: SD_EXPIRY_OPTS.find(o => o.value === sdResult.expiry)?.label || sdResult.expiry },
-                        { k: "Max Views", v: `${sdResult.views}` },
-                        { k: "Passphrase", v: sdPass ? "Protected" : "None" },
-                      ].map(m => (
-                        <div key={m.k} style={{ padding: "4px 10px", borderRadius: 7, fontSize: 10.5, background: dk ? "#1e293b" : "#f1f5f9", border: `1px solid ${bd}`, color: mu }}>
-                          <strong style={{ color: tx }}>{m.k}:</strong> {m.v}
-                        </div>
-                      ))}
-                    </div>
-
-                    {sLine(sdStatus)}
-
-                    <button onClick={handleSdReset} style={{
-                      padding: "9px 16px", borderRadius: 9, border: `1px solid ${bd}`,
-                      background: "transparent", color: mu, fontSize: 12.5, fontWeight: 600,
-                      cursor: "pointer", width: "100%", textAlign: "center",
-                      WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                    }}>↺ Create another link</button>
-                  </div>
-                )}
-
-                {/* ── DESTROYED STATE ── */}
-                {sdDestroyed && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    <div style={{ borderRadius: 12, border: "1px solid #ef444440", background: dk ? "#1c0a0a" : "#fff1f2", padding: "24px 20px", textAlign: "center" }}>
-                      <div style={{ fontSize: 36, marginBottom: 10 }}>💥</div>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: "#ef4444", marginBottom: 6 }}>Link Permanently Destroyed</div>
-                      <div style={{ fontSize: 12, color: mu, lineHeight: 1.6 }}>
-                        The secret content has been permanently purged. The link is now dead — any attempt to access it will return a 404. In production, <code style={{ fontSize: 10.5, background: dk ? "#1e293b" : "#fee2e2", borderRadius: 4, padding: "1px 5px", color: "#dc2626" }}>DELETE /api/links/{"{"}id{"}"}</code> fires immediately on view or manual destruction.
-                      </div>
-                    </div>
-                    {sLine(sdStatus)}
-                    <button onClick={handleSdReset} style={{
-                      padding: "11px 16px", borderRadius: 9, border: "none",
-                      background: "linear-gradient(135deg, #ef4444, #dc2626)", color: "#fff",
-                      fontSize: 13, fontWeight: 700, cursor: "pointer", width: "100%",
-                      WebkitTapHighlightColor: "transparent", touchAction: "manipulation",
-                    }}>↺ Create a new self-destruct link</button>
-                  </div>
-                )}
-
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, color: mu }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  async fetch · POST /api/links/create · try/catch mock fallback · zero plaintext storage
-                </div>
-              </div>
-
-            </div>
-          ); /* end SecurityModule return */
-        } /* end function SecurityModule */
-
-        /* Render SecurityModule with all required style helpers forwarded */
-        return (
-          <SecurityModule
-            dark={dark} surface={surface} border={border} text={text} muted={muted}
-            inputStyle={inputStyle} labelStyle={labelStyle}
-            panelStyle={panelStyle} panelHeaderStyle={panelHeaderStyle} iconBubble={iconBubble}
-          />
-        );
-      })()}{/* end utilCategory === "security" IIFE */}
-
+          </div>
+
+          {/* Status */}
+          {statusLine(mgStatus)}
+
+          {/* Merge & Download */}
+          {actionBtn(
+            "Merge & Download",
+            handleMerge,
+            "linear-gradient(135deg, #10b981, #059669)",
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          )}
+        </div>
+
+      </div>{/* end 3-col grid */}
     </div>
   );
 }
@@ -5345,8 +2381,30 @@ function App() {
   const muted   = dark ? "#94a3b8" : "#64748b";
   const accent  = "#6366f1";
 
-  const inputStyle = { width: "100%", padding: "9px 12px", border: `1px solid ${border}`, borderRadius: 9, background: dark ? "#0f172a" : "#f8fafc", color: text, fontSize: 13, outline: "none", transition: "border-color 0.15s", boxSizing: "border-box", fontFamily: "inherit" };
-  const labelStyle = { fontSize: 11.5, fontWeight: 600, color: muted, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 5, display: "block" };
+  const inputStyle = {
+    width: "100%",
+    padding: "10px 13px",
+    border: `1px solid ${border}`,
+    borderRadius: 9,
+    background: dark ? "#0f172a" : "#ffffff",
+    color: dark ? "#f1f5f9" : "#0f172a",
+    fontSize: 14,
+    outline: "none",
+    transition: "border-color 0.15s",
+    boxSizing: "border-box",
+    fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif",
+    fontWeight: 400,
+    letterSpacing: "-0.01em",
+  };
+  const labelStyle = {
+    fontSize: 12,
+    fontWeight: 700,
+    color: dark ? "#94a3b8" : "#374151",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    marginBottom: 6,
+    display: "block",
+  };
 
   // Shorthand for project fields
   const proj = activeProject || {};
@@ -5509,8 +2567,8 @@ function App() {
       animation: "fadeIn 0.45s ease",
       display: "flex", flexDirection: "column", alignItems: "center",
     };
-    const fieldLabel = { fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6, display: "block" };
-    const fieldInput = { width: "100%", padding: "11px 14px", border: "1px solid rgba(99,102,241,0.2)", borderRadius: 10, background: "rgba(15,23,42,0.8)", color: "#f1f5f9", fontSize: 14, transition: "all 0.15s", outline: "none", fontFamily: "inherit" };
+    const fieldLabel = { fontSize: 12, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 7, display: "block" };
+    const fieldInput = { width: "100%", padding: "12px 14px", border: "1px solid rgba(99,102,241,0.2)", borderRadius: 10, background: "rgba(15,23,42,0.8)", color: "#f1f5f9", fontSize: 14.5, transition: "all 0.15s", outline: "none", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", letterSpacing: "-0.01em" };
     const logoBlock = (
       <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 0, userSelect: "none" }}>
@@ -5549,10 +2607,11 @@ function App() {
       ];
 
       return (
-        <div style={{ minHeight: "100vh", background: appDark ? "linear-gradient(135deg,#0f172a 0%,#1a1040 50%,#0f1f2e 100%)" : "linear-gradient(135deg,#f0f4ff 0%,#faf5ff 40%,#f0fdf9 100%)", fontFamily: "'DM Sans','Segoe UI',sans-serif", overflowX: "hidden", position: "relative", transition: "background 0.4s ease" }}>
+        <div style={{ minHeight: "100vh", background: appDark ? "linear-gradient(135deg,#0f172a 0%,#1a1040 50%,#0f1f2e 100%)" : "linear-gradient(135deg,#f0f4ff 0%,#faf5ff 40%,#f0fdf9 100%)", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", overflowX: "hidden", position: "relative", transition: "background 0.4s ease" }}>
           <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap');
             *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            body { font-family: 'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; }
 
             @keyframes flowBackground {
               0%   { transform: translate(0px, 0px) scale(1); }
@@ -5647,7 +2706,8 @@ function App() {
               color: #fff; font-size: 15px; font-weight: 700;
               cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
               box-shadow: 0 6px 24px rgba(99,102,241,0.45);
-              font-family: inherit;
+              font-family: 'Plus Jakarta Sans','DM Sans',sans-serif;
+              letter-spacing: -0.01em;
             }
             .lp-btn-primary:hover {
               transform: translateY(-3px) scale(1.04);
@@ -5660,7 +2720,8 @@ function App() {
               background: rgba(99,102,241,0.08); color: #a5b4fc;
               font-size: 15px; font-weight: 600; cursor: pointer;
               transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
-              font-family: inherit;
+              font-family: 'Plus Jakarta Sans','DM Sans',sans-serif;
+              letter-spacing: -0.01em;
             }
             .lp-btn-ghost:hover {
               transform: translateY(-3px) scale(1.03);
@@ -5671,8 +2732,9 @@ function App() {
               padding: 9px 22px; border-radius: 10px;
               border: 1px solid rgba(99,102,241,0.35);
               background: transparent; color: #a5b4fc;
-              font-size: 13px; font-weight: 600; cursor: pointer;
-              transition: all 0.18s; font-family: inherit;
+              font-size: 13.5px; font-weight: 600; cursor: pointer;
+              transition: all 0.18s; font-family: 'Plus Jakarta Sans','DM Sans',sans-serif;
+              letter-spacing: -0.01em;
             }
             .lp-btn-nav-outline:hover {
               background: rgba(99,102,241,0.1);
@@ -5682,9 +2744,10 @@ function App() {
             .lp-btn-nav-solid {
               padding: 9px 22px; border-radius: 10px; border: none;
               background: linear-gradient(135deg,#6366f1,#4f46e5);
-              color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+              color: #fff; font-size: 13.5px; font-weight: 700; cursor: pointer;
               transition: all 0.18s; box-shadow: 0 4px 14px rgba(99,102,241,0.4);
-              font-family: inherit;
+              font-family: 'Plus Jakarta Sans','DM Sans',sans-serif;
+              letter-spacing: -0.01em;
             }
             .lp-btn-nav-solid:hover {
               transform: translateY(-2px);
@@ -5758,8 +2821,7 @@ function App() {
           </div>
 
           {/* ── NAV ─────────────────────────────────────────── */}
-          <nav className="lp-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid rgba(99,102,241,0.12)", position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(20px)", background: appDark ? "rgba(15,23,42,0.88)" : "rgba(248,250,252,0.94)", flexWrap: "wrap", gap: 10 }}>
-            <style>{`@media (min-width: 640px) { .lp-nav { padding: 18px 48px !important; flex-wrap: nowrap !important; gap: 0 !important; } }`}</style>
+          <nav className="lp-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 48px", borderBottom: "1px solid rgba(99,102,241,0.12)", position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(20px)", background: appDark ? "rgba(15,23,42,0.88)" : "rgba(248,250,252,0.94)" }}>
             {/* ── TrES Workspace text logo — top left ── */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 0, userSelect: "none" }}>
               <span style={{
@@ -5823,17 +2885,14 @@ function App() {
           </nav>
 
           {/* ── HERO ─────────────────────────────────────────── */}
-          <section style={{ textAlign: "center", padding: "72px 20px 60px", position: "relative", zIndex: 1 }}>
-            <div className="lp-badge" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 18px", borderRadius: 99, background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.28)", marginBottom: 36 }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#6366f1", animation: "subtleBob 2.4s ease-in-out infinite" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#a5b4fc", letterSpacing: "0.08em", textTransform: "uppercase" }}>The All-in-One Freelance OS</span>
-            </div>
+          <section style={{ textAlign: "center", padding: "108px 24px 80px", position: "relative", zIndex: 1 }}>
+
             <h1 className="lp-h1" style={{ fontSize: "clamp(38px,6.5vw,76px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.03em", lineHeight: 1.07, maxWidth: 900, margin: "0 auto 28px" }}>
               Manage clients,<br />
               <span className="lp-shimmer-text">projects &amp; revenue</span>
               <br />from one workspace.
             </h1>
-            <p className="lp-sub" style={{ fontSize: "clamp(14px, 3.5vw, 18px)", color: appDark ? "#94a3b8" : "#475569", maxWidth: 580, margin: "0 auto 48px", lineHeight: 1.75 }}>
+            <p className="lp-sub" style={{ fontSize: 18, color: appDark ? "#94a3b8" : "#374151", maxWidth: 580, margin: "0 auto 48px", lineHeight: 1.75, fontWeight: 400, letterSpacing: "-0.01em" }}>
               TrES is the premium workspace built for freelancers and agencies — track milestones, generate invoices, and deliver polished client reports without switching tools.
             </p>
             <div className="lp-cta" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
@@ -5842,7 +2901,7 @@ function App() {
             </div>
 
             {/* Metrics strip */}
-            <div className="lp-metrics" style={{ display: "flex", gap: 0, justifyContent: "center", marginTop: 60, flexWrap: "wrap", rowGap: 24 }}>
+            <div className="lp-metrics" style={{ display: "flex", gap: 0, justifyContent: "center", marginTop: 72, flexWrap: "wrap" }}>
               {[
                 { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>, val: "99.9%", lbl: "Platform Uptime", c: "#06b6d4" },
                 { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, val: "E2E", lbl: "Data Encryption", c: "#6366f1" },
@@ -5877,8 +2936,8 @@ function App() {
               ].map((f, i) => (
                 <div key={i} className={`lp-feat-card lp-card-${i}`}>
                   <div style={{ width: 50, height: 50, borderRadius: 14, background: f.color + "1a", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18, border: `1px solid ${f.color}28` }}>{f.icon}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 10 }}>{f.title}</div>
-                  <div style={{ fontSize: 13, color: appDark ? "#94a3b8" : "#475569", lineHeight: 1.7 }}>{f.desc}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 10, letterSpacing: "-0.02em" }}>{f.title}</div>
+                  <div style={{ fontSize: 13.5, color: appDark ? "#94a3b8" : "#374151", lineHeight: 1.75, fontWeight: 400 }}>{f.desc}</div>
                 </div>
               ))}
             </div>
@@ -5900,8 +2959,8 @@ function App() {
               ].map((w, i) => (
                 <div key={i} className={`lp-why-card lp-why-${i}`}>
                   <div style={{ width: 44, height: 44, borderRadius: 12, background: w.color + "18", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, border: `1px solid ${w.color}22` }}>{w.icon}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 8 }}>{w.title}</div>
-                  <div style={{ fontSize: 13, color: appDark ? "#94a3b8" : "#475569", lineHeight: 1.65 }}>{w.body}</div>
+                  <div style={{ fontSize: 14.5, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", marginBottom: 8, letterSpacing: "-0.01em" }}>{w.title}</div>
+                  <div style={{ fontSize: 13.5, color: appDark ? "#94a3b8" : "#374151", lineHeight: 1.7, fontWeight: 400 }}>{w.body}</div>
                 </div>
               ))}
             </div>
@@ -5933,20 +2992,33 @@ function App() {
           <section style={{ textAlign: "center", padding: "80px 24px 60px", borderTop: "1px solid rgba(99,102,241,0.1)", background: appDark ? "rgba(15,23,42,0.7)" : "rgba(240,244,255,0.9)", position: "relative", zIndex: 1 }}>
             <div className="lp-footer-cta">
               <div style={{ fontSize: "clamp(22px,3.5vw,38px)", fontWeight: 800, color: appDark ? "#f1f5f9" : "#0f172a", letterSpacing: "-0.02em", marginBottom: 14 }}>Ready to run your freelance business like a pro?</div>
-              <div style={{ fontSize: 15, color: "#94a3b8", marginBottom: 36, maxWidth: 480, margin: "0 auto 36px" }}>Join thousands of freelancers already using TrES Workspace.</div>
+              <div style={{ fontSize: 15, color: appDark ? "#94a3b8" : "#374151", marginBottom: 36, maxWidth: 480, margin: "0 auto 36px", fontWeight: 400, lineHeight: 1.7 }}>Join thousands of freelancers already using TrES Workspace.</div>
               <button className="lp-btn-primary" onClick={() => setViewMode('signup')} style={{ fontSize: 15, padding: "14px 44px" }}>Create Free Account</button>
               <div style={{ marginTop: 20, fontSize: 12, color: "#475569" }}>Already have an account?{" "}<button onClick={() => setViewMode('signin')} style={{ background: "none", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: 12, fontWeight: 600, textDecoration: "underline" }}>Sign In</button></div>
             </div>
           </section>
 
           {/* ── FOOTER ───────────────────────────────────────── */}
-          <footer style={{ borderTop: "1px solid rgba(99,102,241,0.08)", background: appDark ? "rgba(10,14,26,0.95)" : "rgba(241,245,249,0.98)", padding: "56px 48px 32px", position: "relative", zIndex: 1 }}>
-            <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+          <footer style={{
+            borderTop: "1px solid rgba(99,102,241,0.08)",
+            background: appDark ? "rgba(10,14,26,0.95)" : "rgba(241,245,249,0.98)",
+            padding: "48px 0 28px",
+            position: "relative", zIndex: 1,
+            width: "100%", maxWidth: "100%", overflowX: "hidden", boxSizing: "border-box",
+          }}>
+            <style>{`
+              .footer-inner { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+              .footer-grid { display: grid; grid-template-columns: 1fr; gap: 32px; margin-bottom: 40px; }
+              @media (min-width: 560px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; } }
+              @media (min-width: 900px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; } }
+              .footer-bottom { border-top: 1px solid rgba(99,102,241,0.08); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+            `}</style>
+            <div className="footer-inner">
+              <div className="footer-grid">
                 {/* Brand col */}
                 <div>
                   <img src="" alt="Your Logo Here" style={{ height: 40, width: "auto", maxWidth: 160, objectFit: "contain", background: "rgba(99,102,241,0.08)", borderRadius: 10, border: "1px dashed rgba(99,102,241,0.3)", padding: "6px 16px", marginBottom: 16 }} onError={e => { e.target.style.display = 'none'; }} />
-                  <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.7, maxWidth: 280 }}>The all-in-one freelance operating system. Manage projects, track time, and get paid — all from one beautiful workspace.</p>
+                  <p style={{ fontSize: 13.5, color: appDark ? "#94a3b8" : "#374151", lineHeight: 1.75, maxWidth: 280, fontWeight: 400 }}>The all-in-one freelance operating system. Manage projects, track time, and get paid — all from one beautiful workspace.</p>
                   <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                     {[
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>,
@@ -5963,40 +3035,40 @@ function App() {
                 </div>
                 {/* Product col */}
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Product</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Product</div>
                   {["Client Workspace","Invoice Generator","Time Tracker","Utilities Studio","Resume Builder","Completion Certs"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
+                    <div key={l} style={{ fontSize: 13.5, color: appDark ? "#64748b" : "#475569", marginBottom: 10, cursor: "pointer", transition: "color 0.15s", fontWeight: 400 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
+                      onMouseLeave={e => e.currentTarget.style.color = appDark ? "#64748b" : "#475569"}>{l}</div>
                   ))}
                 </div>
                 {/* Company col */}
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Company</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Company</div>
                   {["About Us","Careers","Blog","Press Kit","Partners","Contact"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
+                    <div key={l} style={{ fontSize: 13.5, color: appDark ? "#64748b" : "#475569", marginBottom: 10, cursor: "pointer", transition: "color 0.15s", fontWeight: 400 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
+                      onMouseLeave={e => e.currentTarget.style.color = appDark ? "#64748b" : "#475569"}>{l}</div>
                   ))}
                 </div>
                 {/* Legal col */}
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#f1f5f9", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 18 }}>Legal</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: appDark ? "#f1f5f9" : "#0f172a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Legal</div>
                   {["Privacy Policy","Terms of Service","Cookie Policy","GDPR","Security","Accessibility"].map(l => (
-                    <div key={l} style={{ fontSize: 13, color: "#64748b", marginBottom: 10, cursor: "pointer", transition: "color 0.15s" }}
+                    <div key={l} style={{ fontSize: 13.5, color: appDark ? "#64748b" : "#475569", marginBottom: 10, cursor: "pointer", transition: "color 0.15s", fontWeight: 400 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>{l}</div>
+                      onMouseLeave={e => e.currentTarget.style.color = appDark ? "#64748b" : "#475569"}>{l}</div>
                   ))}
                 </div>
               </div>
               {/* Bottom bar */}
-              <div style={{ borderTop: "1px solid rgba(99,102,241,0.08)", paddingTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-                <div style={{ fontSize: 12, color: "#334155" }}>© 2026 TrES Workspace. Built and owned by <span style={{ color: "#6366f1", fontWeight: 600 }}>CodeScriptors IT Solutions</span>. All rights reserved.</div>
-                <div style={{ display: "flex", gap: 20 }}>
+              <div className="footer-bottom">
+                <div style={{ fontSize: 12.5, color: appDark ? "#475569" : "#374151", fontWeight: 500, lineHeight: 1.6 }}>© 2026 TrES Workspace. Built and owned by <span style={{ color: "#6366f1", fontWeight: 700 }}>CodeScriptors IT Solutions</span>. All rights reserved.</div>
+                <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
                   {["Privacy","Terms","Cookies"].map(l => (
-                    <span key={l} style={{ fontSize: 12, color: "#334155", cursor: "pointer", transition: "color 0.15s" }}
+                    <span key={l} style={{ fontSize: 12.5, color: appDark ? "#475569" : "#374151", cursor: "pointer", transition: "color 0.15s", fontWeight: 500 }}
                       onMouseEnter={e => e.currentTarget.style.color = "#a5b4fc"}
-                      onMouseLeave={e => e.currentTarget.style.color = "#334155"}>{l}</span>
+                      onMouseLeave={e => e.currentTarget.style.color = appDark ? "#475569" : "#374151"}>{l}</span>
                   ))}
                 </div>
               </div>
@@ -6009,9 +3081,9 @@ function App() {
     // ── SIGN-IN FORM ─────────────────────────────────────────
     if (viewMode === 'signin') {
       return (
-        <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+        <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif" }}>
           <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
             * { box-sizing: border-box; margin: 0; padding: 0; }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
             .auth-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; outline: none; }
@@ -6019,8 +3091,8 @@ function App() {
           <div style={cardStyle}>
             {logoBlock}
             <div style={{ textAlign: "center", marginBottom: 32, width: "100%" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Welcome Back</div>
-              <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 8 }}>Sign in to your TrES Workspace</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", lineHeight: 1.2 }}>Welcome Back</div>
+              <div style={{ fontSize: 14, color: "#94a3b8", marginTop: 8, fontWeight: 400, lineHeight: 1.6 }}>Sign in to your TrES Workspace</div>
             </div>
             <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
@@ -6050,9 +3122,9 @@ function App() {
 
     // ── SIGN-UP FORM ─────────────────────────────────────────
     return (
-      <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif", padding: "40px 16px" }}>
+      <div style={{ minHeight: "100vh", background: authBg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", padding: "40px 16px" }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
           * { box-sizing: border-box; margin: 0; padding: 0; }
           @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
           .auth-input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important; outline: none; }
@@ -6060,8 +3132,8 @@ function App() {
         <div style={cardStyle}>
           {logoBlock}
           <div style={{ textAlign: "center", marginBottom: 32, width: "100%" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Create Your Account</div>
-            <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 8 }}>Start managing projects like a pro — free forever.</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", lineHeight: 1.2 }}>Create Your Account</div>
+            <div style={{ fontSize: 14, color: "#94a3b8", marginTop: 8, fontWeight: 400, lineHeight: 1.6 }}>Start managing projects like a pro — free forever.</div>
           </div>
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
@@ -6098,11 +3170,12 @@ function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", width: "100%", maxWidth: "100%", overflowX: "hidden", background: bg, color: text, fontFamily: "'DM Sans','Segoe UI',sans-serif", transition: "all 0.25s ease", boxSizing: "border-box" }}>
+    <div style={{ minHeight: "100vh", background: bg, color: text, fontFamily: "'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif", transition: "all 0.25s ease", WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { max-width: 100%; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        input, select, textarea, button { font-family: 'Plus Jakarta Sans','DM Sans','Segoe UI',sans-serif; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: ${dark ? "#475569" : "#cbd5e1"}; border-radius: 99px; }
@@ -6112,49 +3185,10 @@ function App() {
         @keyframes flash { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes stickyIn { from { opacity: 0; transform: scale(0.88) translateY(24px) rotate(-1.5deg); } to { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } }
         @keyframes stickyWiggle { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-1deg); } 75% { transform: rotate(1deg); } }
-        .tab-btn { border: none; background: transparent; cursor: pointer; transition: all 0.2s ease; font-family: 'DM Sans', sans-serif; }
+        .tab-btn { border: none; background: transparent; cursor: pointer; transition: all 0.2s ease; font-family: 'Plus Jakarta Sans','DM Sans',sans-serif; }
         .tab-btn:hover { color: ${accent}; }
         input:focus, select:focus, textarea:focus { border-color: ${accent} !important; box-shadow: 0 0 0 3px ${accent}22 !important; }
         .hover-lift:hover { transform: translateY(-2px); box-shadow: ${dark ? "0 8px 24px rgba(0,0,0,0.3)" : "0 8px 24px rgba(0,0,0,0.08)"}; }
-
-        /* ── Mobile-first layout helpers ── */
-        .dash-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; min-height: 58px; }
-        @media (min-width: 640px) { .dash-nav { flex-wrap: nowrap; padding: 0 24px; height: 58px; gap: 0; } }
-
-        .dash-nav-tabs { display: none; }
-        @media (min-width: 640px) { .dash-nav-tabs { display: flex; gap: 2px; flex: 1; overflow: hidden; } }
-
-        .dash-nav-tabs-mobile { display: flex; gap: 4px; overflow-x: auto; padding: 0 16px 10px; border-bottom: 1px solid ${border}; -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%; }
-        .dash-nav-tabs-mobile::-webkit-scrollbar { display: none; }
-        @media (min-width: 640px) { .dash-nav-tabs-mobile { display: none; } }
-
-        .dash-main { padding: 16px; width: 100%; max-width: 100%; }
-        @media (min-width: 768px) { .dash-main { padding: 28px 24px; max-width: 1400px; margin: 0 auto; } }
-
-        .workspace-cols { display: grid; grid-template-columns: 1fr; gap: 16px; width: 100%; }
-        @media (min-width: 1024px) { .workspace-cols { grid-template-columns: 1fr 1fr; gap: 20px; } }
-
-        .meta-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 480px) { .meta-grid { grid-template-columns: 1fr 1fr; } }
-
-        .resume-header-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        @media (min-width: 640px) { .resume-header-bar { flex-direction: row; align-items: center; justify-content: space-between; } }
-
-        .resume-view-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-
-        .resume-cv-grid { display: grid; grid-template-columns: 1fr; gap: 16px; width: 100%; }
-        @media (min-width: 768px) { .resume-cv-grid { grid-template-columns: 180px 1fr; } }
-        @media (min-width: 1100px) { .resume-cv-grid { grid-template-columns: 200px 1fr 1fr; } }
-
-        .resume-2col { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
-        @media (min-width: 768px) { .resume-2col { grid-template-columns: 1fr 1fr; } }
-
-        .cv-sidebar { display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        @media (min-width: 768px) { .cv-sidebar { flex-direction: column; flex-wrap: nowrap; overflow-x: unset; overflow-y: auto; max-height: calc(100vh - 180px); gap: 0; } }
-
-        .touch-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
-        .touch-btn:active { transform: scale(0.97); }
-
         @media print {
           .no-print { display: none !important; }
           .print-a4 { width: 210mm; min-height: 297mm; margin: 0 auto; background: white !important; color: #000 !important; box-shadow: none !important; }
@@ -6175,9 +3209,11 @@ function App() {
       />
 
       {/* ── NAV ───────────────────────────────────────────── */}
-      <nav className="dash-nav no-print" style={{
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 100,
         background: dark ? "rgba(15,23,42,0.94)" : "rgba(248,250,252,0.94)",
         backdropFilter: "blur(16px)", borderBottom: `1px solid ${border}`,
+        padding: "0 24px", display: "flex", alignItems: "center", height: 58, gap: 0,
       }}>
         {/* Logo — TrES brand identity text */}
         <div style={{ display: "flex", alignItems: "center", marginRight: activeProject ? 16 : 36, flexShrink: 0, userSelect: "none" }}>
@@ -6216,8 +3252,8 @@ function App() {
           </div>
         )}
 
-        {/* Tabs — desktop: inline in nav; mobile: scrollable row below nav */}
-        <div className="dash-nav-tabs">
+        {/* Tabs — always visible so Utilities Studio & Resume Studio are always accessible */}
+        <div style={{ display: "flex", gap: 2, flex: 1 }}>
           {[
             { id: "workspaces", label: "Client Workspace",       icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> },
             { id: "utilities",  label: "Utilities Studio",        icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> },
@@ -6228,7 +3264,7 @@ function App() {
               fontWeight: activeTab === tab.id ? 600 : 400,
               color: activeTab === tab.id ? accent : muted,
               borderBottom: activeTab === tab.id ? `2px solid ${accent}` : "2px solid transparent",
-              display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
+              display: "flex", alignItems: "center", gap: 6,
             }}>
               {tab.icon} {tab.label}
             </button>
@@ -6282,32 +3318,6 @@ function App() {
         </div>
       </nav>
 
-      {/* ── MOBILE TAB ROW (visible only < 640px) ─────────── */}
-      <div className="dash-nav-tabs-mobile no-print">
-        {[
-          { id: "workspaces", label: "Workspace",  icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> },
-          { id: "utilities",  label: "Utilities",  icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> },
-          { id: "resume",     label: "Resume",     icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-        ].map(tab => (
-          <button
-            key={tab.id}
-            className="tab-btn touch-btn"
-            onClick={() => setGlobal("activeTab", tab.id)}
-            style={{
-              display: "flex", alignItems: "center", gap: 5,
-              padding: "8px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-              whiteSpace: "nowrap", flexShrink: 0,
-              color: activeTab === tab.id ? accent : muted,
-              background: activeTab === tab.id ? accent + "15" : "transparent",
-              border: `1px solid ${activeTab === tab.id ? accent + "50" : "transparent"}`,
-              transition: "all 0.15s",
-            }}
-          >
-            {tab.icon} {tab.label}
-          </button>
-        ))}
-      </div>
-
       {/* ── PROJECT HUB (no active project and on workspaces tab) ──────────────── */}
       {!activeProject && activeTab === "workspaces" && (
         <ProjectHub
@@ -6321,7 +3331,7 @@ function App() {
 
       {/* ── WORKSPACE — Utilities & Resume render independently; Client Workspace requires an active project ── */}
       {(activeProject || activeTab === "utilities" || activeTab === "resume") && (
-        <main className="dash-main" style={{ animation: "fadeIn 0.3s ease" }}>
+        <main style={{ padding: "28px 24px", maxWidth: 1400, margin: "0 auto", animation: "fadeIn 0.3s ease" }}>
 
           {/* ══ TAB A — CLIENT WORKSPACE ══════════════════════ */}
           {activeTab === "workspaces" && !activeProject && (
@@ -6333,7 +3343,7 @@ function App() {
             </div>
           )}
           {activeTab === "workspaces" && activeProject && (
-            <div className="workspace-cols">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
 
               {/* LEFT: Setup Panel */}
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -6342,9 +3352,9 @@ function App() {
                 <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: 16, padding: 22 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                    <span style={{ fontSize: "clamp(13px, 3.5vw, 15px)", fontWeight: 600, color: text }}>Project Metadata</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: text }}>Project Metadata</span>
                   </div>
-                  <div className="meta-grid">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div>
                       <label style={labelStyle}>Project Name</label>
                       <input style={inputStyle} value={proj.name || ""} onChange={e => updateProject("name", e.target.value)} />
@@ -6613,7 +3623,7 @@ function App() {
                 <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: 16, padding: 20 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                     <div>
-                      <div style={{ fontSize: "clamp(15px, 4vw, 18px)", fontWeight: 700, color: text }}>{proj.name || "Untitled Project"}</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: text }}>{proj.name || "Untitled Project"}</div>
                       <div style={{ fontSize: 12, color: muted, marginTop: 2 }}>{proj.client}</div>
                     </div>
                     <HealthPulse health={proj.health || "on-track"} />
@@ -6874,15 +3884,15 @@ function App() {
           {/* ══ TAB C — EXECUTIVE RESUME STUDIO ══════════════ */}
           {activeTab === "resume" && (
             <div>
-              <div className="resume-header-bar">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                 <div>
-                  <div style={{ fontSize: "clamp(15px, 4vw, 18px)", fontWeight: 700, color: text }}>Executive Resume Studio</div>
-                  <div style={{ fontSize: "clamp(11px, 3vw, 13px)", color: muted, marginTop: 3 }}>Professional CV builder, agency pitch deck, and ATS keyword analyzer</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: text }}>Executive Resume Studio</div>
+                  <div style={{ fontSize: 13, color: muted, marginTop: 3 }}>Professional CV builder, agency pitch deck, and ATS keyword analyzer</div>
                 </div>
-                <div className="resume-view-tabs">
+                <div style={{ display: "flex", gap: 6 }}>
                   {["cv", "agency", "ats"].map(v => (
-                    <button key={v} onClick={() => setResumeView(v)} className="touch-btn" style={{
-                      padding: "9px 16px", borderRadius: 9, fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                    <button key={v} onClick={() => setResumeView(v)} style={{
+                      padding: "7px 16px", borderRadius: 9, fontSize: 12.5, fontWeight: 600, cursor: "pointer",
                       border: `1px solid ${resumeView === v ? accent : border}`,
                       background: resumeView === v ? accent : "transparent",
                       color: resumeView === v ? "#fff" : muted,
@@ -6894,10 +3904,10 @@ function App() {
 
               {/* CV Builder */}
               {resumeView === "cv" && (
-                <div className="resume-cv-grid">
+                <div style={{ display: "grid", gridTemplateColumns: "200px 1fr 1fr", gap: 16 }}>
 
                   {/* ── Layout Selector Sidebar ── */}
-                  <div className="cv-sidebar">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 0, overflowY: "auto", maxHeight: "calc(100vh - 180px)" }}>
                     {/* CV Section Header */}
                     <div style={{ position: "sticky", top: 0, zIndex: 2, background: dark ? "#1e293b" : "#f1f5f9", borderRadius: 8, padding: "7px 10px", marginBottom: 6, border: `1px solid ${dark ? "#334155" : "#dde3ea"}` }}>
                       <div style={{ fontSize: 10, fontWeight: 900, color: "#1a3a5c", textTransform: "uppercase", letterSpacing: "0.13em", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -7968,7 +4978,7 @@ function App() {
 
               {/* ATS Analyzer */}
               {resumeView === "ats" && (
-                <div className="resume-2col">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                   <ATSAnalyzer dark={dark} surface={surface} border={border} text={text} muted={muted} accent={accent} resumeText={resumeFullText} />
                   <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: 16, padding: 22 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
